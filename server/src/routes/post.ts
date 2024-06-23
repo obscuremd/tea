@@ -95,7 +95,6 @@ router.delete('/:id',async(req, res)=>{
     }
 })
 
-
 // like/dislike a post
 router.put('/:id/likes', async(req, res)=>{
     try {
@@ -117,8 +116,6 @@ router.put('/:id/likes', async(req, res)=>{
         res.status(400).json(error)
     }
 })
-
-
 
 // get post of following
 router.get('/timeline/:userId', async (req, res) => {

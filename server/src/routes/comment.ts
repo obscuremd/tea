@@ -10,7 +10,7 @@ router.post('/:id',async(req, res) =>{
         const newComment = new Comment ({
             postId: req.params.id,
             text: req.body.text,
-            userId: req.body.userId,
+            email: req.body.email,
         })
 
         const savedComment = await newComment.save()
@@ -44,7 +44,7 @@ router.delete('/:id', async(req, res) =>{
         if(!comment){
             res.status(404).json('comment not found')
         }
-        else if (comment.userId === req.body.userId) {
+        else if (comment.email === req.body.email) {
             res.status(200).json('comment deleted') 
         } else {
             res.status(500).json('you can only delete your comment')
