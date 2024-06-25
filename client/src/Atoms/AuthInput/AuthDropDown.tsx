@@ -26,14 +26,14 @@ export const AuthDropdown: React.FC<Props> = ({ dropdown, setDropdown, data, ind
       <motion.button
         initial={{x:'-50%', opacity:0}} animate={{x:0, opacity:1, transition:{delay:0.3}}}
         onClick={() => setDropdown(!dropdown)}
-        className={`px-3 py-2 w-full rounded-2xl border-[1px] border-[#445B8A] flex items-center justify-between relative z-${zIndex}`}
+        className={`px-3 py-2 w-full rounded-2xl border-[1px] border-[#62668980] flex items-center justify-between relative z-${zIndex}`}
         style={{ fontSize: Shared.Text.small}}
         >
-            <div className='bg-[#2F406480] border-[1px] border-[#445B8A] p-1 rounded-full'>
+            <div className='box p-1 rounded-full'>
                 {icon}
             </div>
         <p className={` ${dataStyle}`}>{projects[index]}</p>
-        <NavArrowDown className="text-[#445B8A]" />
+        <NavArrowDown className="text-[#62668980]" />
         {/* options */}
         <AnimatePresence>
           {dropdown && (
@@ -46,7 +46,7 @@ export const AuthDropdown: React.FC<Props> = ({ dropdown, setDropdown, data, ind
             {projects.map((item, index) => (
               <button
               onClick={() => setIndex(index)}
-              className="py-1 px-4 border-[1px] border-[#445b8a74] rounded-xl w-full truncate min-h-8"
+              className="py-1 px-4 border-[1px] border-[#62668988] rounded-xl w-full truncate min-h-8"
               key={index}
               >
               {item}

@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
             max:50,
             unique: true
         },
+        gender:{
+            type: String,
+            required: true,
+        },
         profilePicture:{
             type: String,
             default:""

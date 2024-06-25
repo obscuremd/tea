@@ -15,7 +15,7 @@ interface Props {
 export const Input: React.FC<Props>=({focus, blur, placeholder, type, isFocused, icon,onChange, height})=>(
     <motion.div 
               initial={{x:'-50%', opacity:0}} animate={{x:0, opacity:1, transition:{delay:0.3}}}
-              className={`flex gap-3 px-3 w-full rounded-2xl border-[1px] outline-none items-center ${isFocused ? 'border-[#5979b7]' : 'border-[#445B8A]'}`}
+              className={`flex gap-3 px-3 w-full rounded-2xl border-[1px] outline-none items-center ${isFocused ? 'border-[#797da9]' : 'border-[#62668980]'}`}
               style={{fontSize:Shared.Text.small}}>
               <div className='box p-1 rounded-full'>
                 {icon}

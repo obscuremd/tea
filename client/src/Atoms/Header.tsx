@@ -38,7 +38,7 @@ const Header = () => {
       </div>
 
       <div className='flex gap-4 md:gap-9 text-xs md:text-base'>
-        <Link>
+        <Link to={'#'}>
           <BellNotification/>
         </Link>
 

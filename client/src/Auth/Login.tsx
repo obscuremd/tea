@@ -1,5 +1,5 @@
 import splash from '../assets/splash.svg'
-import { gradient, gradientTextStyle, Shared, ToasterStyle, Url } from '../assets/Shared'
+import {  gradientTextStyle, Shared, ToasterStyle } from '../assets/Shared'
 import { useState } from 'react';
 import { EyeClosed, EyeSolid } from 'iconoir-react';
 import toast, { Toaster } from 'react-hot-toast';

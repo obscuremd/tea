@@ -1,5 +1,4 @@
-import { Bin, Bookmark, Clock, Heart, HeartSolid, MapPin, MessageText, MoreHoriz, ShareAndroid, UserPlus, UserXmark } from "iconoir-react"
-import { Posts, Users } from "../assets/Data"
+import { Bin, Bookmark, Heart, HeartSolid, MapPin, MessageText, MoreHoriz, ShareAndroid, UserPlus, UserXmark } from "iconoir-react"
 import { Shared, ToasterStyle, Url } from "../assets/Shared"
 import { useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
@@ -142,7 +141,7 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
                         <img src={users?.profilePicture || profile} alt="" className="w-9 h-9 object-cover rounded-full bg-[#ffffff25]" />
                         <div className="">
                             <p style={{ fontSize: Shared.Text.large }} className="font-bold capitalize">{users?.username || 'Unknown'}</p>
-                            <p className="text-[#FFFFFF80] flex items-center font-medium" style={{ fontSize: Shared.Text.small }}><Clock height={Shared.Text.small} color="FFFFFF80" />{date}</p>
+                            <p className="text-[#FFFFFF80] flex items-center font-medium" style={{ fontSize: Shared.Text.small }}><MapPin height={Shared.Text.small} color="FFFFFF80" />{date}</p>
                         </div>
                     </div>
                 </Link>
