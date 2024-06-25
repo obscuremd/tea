@@ -143,7 +143,7 @@ const UserForm = () => {
         whileHover={{scale:1.05, boxShadow:'0 0 10px #2F4064BF'}}
         onClick={save}
         style={{fontSize: Shared.Text.large}}
-        className="AuthButton md:px-12 md:py-2 px-3 py-3 w-full rounded-xl font-bold "
+        className="box md:px-12 md:py-2 px-3 py-3 w-full rounded-xl font-bold "
         >
         {loading
           ?<l-waveform size="35" stroke="3.5" speed="1" color="white"/>
