@@ -2,22 +2,22 @@ import splash from '../assets/splash.svg'
 import { gradient, gradientTextStyle, Shared, ToasterStyle, Url } from '../assets/Shared'
 import { useState } from 'react';
 import { EyeClosed, EyeSolid } from 'iconoir-react';
-import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from "framer-motion"
 import { dotStream } from 'ldrs'
-import { useRecoilState } from 'recoil';
-import { UserState } from '../state/atoms/UserState';
-import { jwtDecode } from 'jwt-decode';
+import { useSignIn } from '@clerk/clerk-react';
+import GradientButton from '../Atoms/Buttons/GradientButton';
 
+interface Props{
+  setActive: (value: number) => void
+}
 
-
-const Login = ({ setActive }) => {
+const Login : React.FC<Props> = ({ setActive }) => {
 
 
   dotStream.register()
 
-
+  const {isLoaded, signIn} =useSignIn()
 
   const [loading, setLoading] = useState(false)
 
@@ -27,43 +27,57 @@ const Login = ({ setActive }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const login = async () => {
 
-    setLoading(true)
 
-    try {
-      // const res = await axios.post("/api/auth/login", { email: email, password: password })
-      const res = await axios.post( `${Url}/api/auth/login`, { email: email, password: password })
+  const Login =async()=>{
+    
+    if(!isLoaded){return}
+    
+    if(email =='' || password === ''){
+      setLoading(true)
+      setTimeout(()=>{
+        toast.error('Please enter your email/ password')
+        setLoading(false)  
+      },1000)
+    }
+    else{
+      
+      setLoading(true)
 
-      // console.log(res)
-      if (res.status === 200) {
-        toast.success('Logged in')
-        // wait after 2 seconds
-        setTimeout(() => {
-          window.localStorage.setItem('token', res.data)
-          window.location.reload()
-        }, 2000);
-      }
+      try {
+        await signIn.create({
+          strategy:'email_link',
+          redirectUrl:`${window.location.origin}/`,
 
-    } catch (error) {
-      if (error.response.status === 404) {
-        setTimeout(() => {
-          toast.error('user not found')
-          setLoading(false)
-        }, 2000)
-      } else if (error.response.status === 401) {
-        setTimeout(() => {
-          toast.error('Invalid username or password')
-          setLoading(false)
-        }, 2000)
-      } else {
-        setTimeout(() => {
-          toast.error('error')
-          console.log(error);
-          setLoading(false)
-        }, 2000)
+          identifier: email,
+          // password: password
+        })
+
+
+      
+      setTimeout(()=>{
+        toast.success('code sent')
+        setActive(1)
+        setLoading(false)
+          // window.location.reload()
+        },2000)
+        
+        
+      } catch (err:unknown) {
+        
+        const error = err as { errors?: { code: string }[] };
+        
+        setLoading(false)
+        if(error.errors && error.errors[0]?.code === 'form_param_format_invalid'){
+          toast.error('Email/Password is invalid')
+        }else{
+          toast.error(JSON.stringify(error.errors && error.errors[0]?.code))
+          console.log(JSON.stringify(error));
+          console.log(error)
+        }
       }
     }
+    
   }
 
 
@@ -109,7 +123,7 @@ const Login = ({ setActive }) => {
             className='flex gap-3 pr-3 w-full rounded-full bg-[#292B3B] border-[1px] outline-none'
             style={{ borderColor: focus ? '#797da9' : '#62668980' }}>
             <motion.input
-              whileFocus={() => setFocus(true)}
+              onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
               onChange={(e) => setPassword(e.target.value)}
               type={passwordVisible ? 'text' : 'password'}
@@ -130,20 +144,7 @@ const Login = ({ setActive }) => {
           <button onClick={() => setActive(0)} style={gradientTextStyle}>Create One</button>
         </motion.p>
 
-        <motion.button
-          initial={{ x: '50%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1, transition: { delay: 0.7 } }}
-          whileHover={{ scale: 1.1, boxShadow: '0 0 10px rgba(74, 83, 169, 0.25)', }}
-          onClick={login}
-          style={{
-            background: gradient,
-            fontSize: Shared.Text.large,
-            borderWidth: 1
-          }}
-          className="md:px-12 md:py-2 px-3 py-3 w-full border-[#626689] rounded-xl font-bold"
-        >
-          {loading ? <l-dot-stream size="70" speed="2.5" color="white" /> : 'Login'}
-        </motion.button>
+        <GradientButton state={loading} func={Login} text={'Login'}/>
       </div>
     </div>
   )

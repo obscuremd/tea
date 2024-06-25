@@ -4,6 +4,7 @@ import { BellNotification, ChatBubbleEmpty } from 'iconoir-react';
 import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { FriendsState } from '../state/atoms/FriendsState';
+import { gradientTextStyleBlue } from '../assets/Shared';
 
 const Header = () => {
   
@@ -23,14 +24,7 @@ const Header = () => {
     };
   }, []);
     
-  const gradientTextStyle = {
-      fontWeight: 'bold',
-      fontSize: '32.36px',
-      backgroundImage: 'linear-gradient(113deg, #FFF 0%, #626689 120.37%)',
-      backgroundClip: 'text',
-      WebkitBackgroundClip: 'text', // For Safari/Chrome
-      color: 'transparent'
-  };
+  
   
   return (
     <div className='bg-[#191A23] flex h-16 md:mb-10 md:border-b-[0.5px] border-[#62668980] md:px-16 items-center justify-between sticky top-0 z-10'>
@@ -40,7 +34,7 @@ const Header = () => {
         <div className='md:w-16 w-10 h-10 md:h-12 bg-[#454862] border-[#62668980] border-[1px] rounded-3xl flex justify-center items-center'>
           <img src={logo} alt="" className='md:w-10 w-6' />
         </div>
-        {!isMobile && <p style={gradientTextStyle}>TEA</p>}
+        {!isMobile && <p style={gradientTextStyleBlue}>TEA</p>}
       </div>
 
       <div className='flex gap-4 md:gap-9 text-xs md:text-base'>

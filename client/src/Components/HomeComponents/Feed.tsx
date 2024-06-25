@@ -1,8 +1,8 @@
-import { useState } from "react"
-import Post from "../Post"
-import axios from "axios"
+import Post from "../../Atoms/Post"
 import Hero from "./Hero"
 import { jellyTriangle } from 'ldrs'
+import { useRecoilState, useRecoilValue } from "recoil"
+import { FetchLoading, FetchPosts, UserPosts } from "../../state/atoms/UserPostsState"
 
 const Feed = () => {
 
@@ -10,14 +10,14 @@ const Feed = () => {
 jellyTriangle.register()
 
 
-    const [userPosts, setUserPosts] = useState([])
-    const [fetchPosts, setFetchPosts] = useState()
-    const [loading, setLoading] = useState(true)
+    const userPosts = useRecoilValue(UserPosts)
+    const [fetchPosts, setFetchPosts] = useRecoilState(FetchPosts)
+    const loading = useRecoilValue(FetchLoading)
     const isMobile= window.innerWidth < 768
     
   return (
     <div>
-        <Hero setUserPosts={setUserPosts} userPosts={userPosts} setFetchPosts={setFetchPosts} setLoading={setLoading}/>
+        <Hero  />
 
         {loading 
         ?<div className="w-full flex justify-center md:py-10 md:px-[25vw] py-[30vh]">

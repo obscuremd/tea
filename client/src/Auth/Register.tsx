@@ -1,66 +1,109 @@
 import splash from '../assets/splash.svg'
-import { gradient, gradientTextStyle, Shared, ToasterStyle, Url } from '../assets/Shared'
+import { characters, gradient, gradientTextStyle, Shared, ToasterStyle, Url } from '../assets/Shared'
 import { useState } from 'react';
 import { EyeClosed, EyeSolid } from 'iconoir-react';
 import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import { ActiveUserState, UserState } from '../state/atoms/UserState';
 import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import { dotStream } from 'ldrs';
+import { useSignUp } from '@clerk/clerk-react';
 
 
-const Register = ({setActive}) => {
+interface Props{
+  setActive: (value: number) => void
+}
+
+const Register : React.FC<Props> = ({setActive}) => {
 
  
 
 dotStream.register()
+
+const {isLoaded, signUp} =useSignUp()
 
   const [loading, setLoading] = useState(false)
   const [focus, setFocus] = useState(false)
 
   const [passwordVisible, setPasswordVisible] = useState(false)
 
-  const [username, setUsername]= useState()
-  const [firstName, setFirstName]= useState()
-  const [lastName, setLastName]= useState()
-  const [email, setEmail]= useState()
-  const [password, setPassword]= useState()
+  const [username, setUsername]= useState('')
+  const [firstName, setFirstName]= useState('')
+  const [lastName, setLastName]= useState('')
+  const [email, setEmail]= useState('')
+  const [password, setPassword]= useState('')
 
-  const [user, setUser] = useRecoilState(UserState)
-  const [activeUser, setActiveUser] = useRecoilState(ActiveUserState)
 
   const register =async()=>{
 
     setLoading(true)
 
-    try {
-      const res =  await axios.post(`${Url}/api/auth/register`,{username:username,email:email, password:password})
+    if(!isLoaded){
+      return
+    }
 
-      if(res.status === 200) {
-        toast.success('Logged in')
-        // wait after 2 seconds
-        setTimeout(() => {
-          setActive(1)
-        }, 2000);
-      }
-      
-    } catch (error) {
-      if(error.response.status === 404){
-        setTimeout(()=>{
-          toast.error('user not found')
+    if(username === '' && email === '' && password === '' || username === '' && email === '' && password === ''){
+      setTimeout(()=>{
+        toast.error('fields must not be empty')
+        setLoading(false)
+      },2000)
+    }
+
+    else if(username.length < 4 || username.length > 64){
+      setTimeout(()=>{
+        toast.error('username must be between 4 and 64 characters')
+        setLoading(false)
+      },2000)
+    }
+
+    else if(password.length < 8){
+      setTimeout(()=>{
+        toast.error('password must be at least 8 characters long')
+        setLoading(false)
+      },2000)
+    }
+
+    else if (!characters.test(password)){
+      setTimeout(()=>{
+        toast.error('password must include at least one special character')
+        setLoading(false)
+      }, 2000)
+    }
+
+
+    else {
+      try {
+        await signUp.create({
+          emailAddress: email,
+          username:username,
+          password:password
+        })
+
+        await signUp.prepareEmailAddressVerification({ strategy:'email_code'})
+        toast.success('user created successfully');
+        setTimeout(()=>{setActive(2)},2000)
+        
+      } catch (err:unknown) {
+
+        const error = err as { errors?: { code: string }[] };
+
+        if( error?.errors && error?.errors[0]?.code === 'form_identifier_exists'){
+          setTimeout(()=>{
+            toast.error('That email address is taken. Please try another.')
+            setLoading(false)
+          },2000)
+        }
+        else if(error?.errors && error?.errors[0]?.code === 'form_param_format_invalid'){
+          setTimeout(()=>{
+            toast.error('invalid email format')
+            setLoading(false)
+          },2000)
+        }
+        else{
+          toast.error(JSON.stringify(error?.errors && error?.errors[0]?.code))
           setLoading(false)
-        },2000)
-      }else if(error.response.status === 401){
-        setTimeout(()=>{
-          toast.error('Invalid username or password')
-          setLoading(false)
-        },2000)
-      }else{
-        setTimeout(()=>{
-          toast.error('error')
-          setLoading(false)
-        },2000)
+          console.log(JSON.stringify(error))
+          console.log(error);
+        }
       }
     }
   }

@@ -20,6 +20,17 @@ export const gradientTextStyle = {
     color: 'transparent'
 };
 
+export const gradientTextStyleBlue = {
+    fontWeight: 'bold',
+    fontSize: '32.36px',
+    backgroundImage: 'linear-gradient(113deg, #FFF 0%, #626689 120.37%)',
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text', // For Safari/Chrome
+    color: 'transparent'
+};
+
 export const gradient = 'linear-gradient(129deg, #D64975 -54.57%, #152046 94.11%)'
 
-export const Url = 'https://socialmedia-biwk.onrender.com'
+export const Url = 'https://tea-bt8e.onrender.com'
+
+export const characters = /[`!@#$%^&*()_+\-={};':"\\|,.<>/?~]/;

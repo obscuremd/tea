@@ -1,7 +1,7 @@
-import Friends from '../Components/Friends'
+import Friends from '../Atoms/Friends'
 import { FriendsState } from '../state/atoms/FriendsState'
 import { useRecoilValue } from 'recoil'
-import FriendsMobile from '../Components/FriendsMobile'
+import FriendsMobile from '../Atoms/FriendsMobile'
 import Feed from '../Components/HomeComponents/Feed'
 import { isMobile } from '../assets/Shared'
 

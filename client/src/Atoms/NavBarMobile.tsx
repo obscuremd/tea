@@ -11,7 +11,7 @@ const NavBarMobile = () => {
   const [isCreatePostVisible, setCreatePostVisible] = useRecoilState(CreatePostState)
 
   return (
-    <div className='sticky bg-[#191A23] bottom-0 w-full px-20 py-4 flex justify-center items-center'>
+    <div className='box sticky bottom-0 w-full px-20 py-4 flex justify-center items-center'>
       <div className="inline-flex justify-center items-center bg-[#292B3B] px-6 py-2 gap-8 rounded-full   ">
         <Link to={'/'}>
           <HomeSimple className="text-base"/>

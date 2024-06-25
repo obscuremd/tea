@@ -5,10 +5,10 @@ const router = Router()
 
 // create user
 router.post('/register', async(req, res) => {
-    const {username, fullName, email, profilePicture, coverPicture}=req.body
+    const {username, fullName, email, profilePicture, coverPicture, location}=req.body
 
     try {
-        const user = await User.create({username, fullName, email, profilePicture, coverPicture})
+        const user = await User.create({username, fullName, email, profilePicture, coverPicture, location})
         res.status(201).json(user)
     } catch (error) {
         res.status(500).json(error)

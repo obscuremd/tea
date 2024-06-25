@@ -1,6 +1,6 @@
 import './App.css'
-import Header from './Components/Header';
-import Navigation from './Screens/Navigation';
+import Header from './Atoms/Header';
+import Navigation from './Navigation/Navigation';
 import { BrowserRouter } from 'react-router-dom'
 import { UserState } from './state/atoms/UserState';
 import { useRecoilState } from 'recoil';

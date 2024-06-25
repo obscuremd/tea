@@ -1,16 +1,22 @@
 import { lazy, Suspense } from 'react';
-import NavBarMobile from '../Components/NavBarMobile'
-import NavBarPc from '../Components/NavBarPc'
+import NavBarMobile from '../Atoms/NavBarMobile'
+import NavBarPc from '../Atoms/NavBarPc'
 import { Route, Routes } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { CommentState } from '../state/atoms/CommentState';
 import { CreatePostState } from '../state/atoms/CreatePostState';
+import { jellyTriangle } from 'ldrs'
 
-const Home = lazy(()=> import('./Home'))
-const Profile = lazy(()=> import('./Profile'))
-const OtherUserProfile = lazy(()=> import('./OtherUserProfile'))
-const CreatePost = lazy(()=> import('../Components/CreatePost'))
-const Comments = lazy(()=> import('../Components/Comments'))
+jellyTriangle.register()
+
+
+
+const Home = lazy(()=> import('../Screens/Home'))
+const Profile = lazy(()=> import('../Screens/Profile'))
+const OtherUserProfile = lazy(()=> import('../Screens/OtherUserProfile'))
+const CreatePost = lazy(()=> import('../Atoms/CreatePost'))
+const Comments = lazy(()=> import('../Atoms/Comments'))
+const Settings = lazy(()=> import('../Screens/Settings'))
 
 function Navigation() {
 
@@ -23,12 +29,13 @@ function Navigation() {
 
   
   return (
-    <Suspense fallback={<l-jelly-l-jelly-triangle size={isMobile?"30":"40"} speed="1.8" color="#572E56"/>}>
+    <Suspense fallback={ <l-jelly-triangle size={isMobile?"30":"40"} speed="1.8" color="#572E56"/> }>
       <div className='min-h-screen bg-[#191A23] text-white min-w-full flex flex-col-reverse md:flex-row gap-[3%]'>
           {isMobile? <NavBarMobile/> : <NavBarPc/>}
           <Routes>
               <Route path='/' element={<Home/>}/>
               <Route path='/profile' element={<Profile/>}/>
+              <Route path='/settings' element={<Settings/>}/>
               <Route path='/Userprofile' element={<OtherUserProfile/>}/>
               <Route path='/Userprofile/:username' element={<OtherUserProfile/>}/>
           </Routes> 

@@ -6,13 +6,31 @@ import { useRecoilState, useRecoilValue } from "recoil"
 import { CommentState } from "../state/atoms/CommentState"
 import axios from "axios"
 import { Link } from "react-router-dom"
-import empty from '../assets/empty profile.svg'
+import profile from '../assets/profile.png'
 import { UserState } from "../state/atoms/UserState"
 import { AnimatePresence, motion } from "framer-motion"
 import toast, { Toaster } from 'react-hot-toast'
 
+interface Props{
+    profilePicture:string, 
+    username:string, 
+    like:string, 
+    photo:string, 
+    desc:string, 
+    comment:string, 
+    date:string, 
+    postsDetails:string, 
+    fetchPosts
+}
 
-const Post = ({ profilePicture, username, like, photo, desc, comment, date, postsDetails, fetchPosts }) => {
+interface MenuButtonProps{
+    icon: React.ReactNode, 
+    text: string, 
+    func: ()=>void, 
+    extra?: string
+}
+
+const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, comment, date, postsDetails, fetchPosts }) => {
 
     const user = useRecoilValue(UserState)
     const [activeMenu, setActiveMenu] = useState(false)
@@ -105,24 +123,23 @@ const Post = ({ profilePicture, username, like, photo, desc, comment, date, post
         }
     }
 
-    const MenuButton = ({ icon, text, func, extra }) => (
+    const MenuButton:React.FC<MenuButtonProps> = ({ icon, text, func, extra }) => (
         <motion.button
             onClick={func}
             whileHover={{ backgroundColor: '#62668980', borderColor: '#626689' }}
-            style={extra}
-            className="flex gap-4 p-2 border-[1px] border-transparent rounded-lg"> {icon} {text}</motion.button>
+            className={`flex gap-4 p-2 border-[1px] border-transparent rounded-lg ${extra}`}> {icon} {text}</motion.button>
     )
 
 
     return (
-        <div className="w-full min-w-[55vw] border-[1px] border-[#62668980] rounded-[13px] px-5 py-3" style={{ background: '#292B3B' }}>
+        <div className="box w-full min-w-[55vw]  rounded-[13px] px-5 py-3">
             <Toaster toastOptions={{ style: ToasterStyle }} />
             {/* Profile and likes */}
             <div className="flex justify-between">
                 {/* profile */}
                 <Link to={`/Userprofile/${users?.username}`}>
                     <div className="flex items-center gap-3">
-                        <img src={users?.profilePicture || empty} alt="" className="w-9 h-9 object-cover rounded-full bg-[#ffffff25]" />
+                        <img src={users?.profilePicture || profile} alt="" className="w-9 h-9 object-cover rounded-full bg-[#ffffff25]" />
                         <div className="">
                             <p style={{ fontSize: Shared.Text.large }} className="font-bold capitalize">{users?.username || 'Unknown'}</p>
                             <p className="text-[#FFFFFF80] flex items-center font-medium" style={{ fontSize: Shared.Text.small }}><Clock height={Shared.Text.small} color="FFFFFF80" />{date}</p>
@@ -149,9 +166,9 @@ const Post = ({ profilePicture, username, like, photo, desc, comment, date, post
 
                                 <MenuButton icon={<Bookmark />} text={'Save'} func={UnFollowUser} />
                                 <MenuButton icon={<ShareAndroid />} text={'Share'} func={followUser} />
-                                <MenuButton icon={<UserXmark />} text={'Unfollow'} func={UnFollowUser} extra={{ color: '#e36db0' }} />
+                                <MenuButton icon={<UserXmark />} text={'Unfollow'} func={UnFollowUser} extra= 'text-[#e36db0]' />
                                 {user._id === posts.userId &&
-                                    <MenuButton icon={<Bin />} text={'Delete'} func={DeletePost} extra={{ color: '#e36db0' }} />
+                                    <MenuButton icon={<Bin />} text={'Delete'} func={DeletePost} extra= 'text-[#e36db0]' />
                                 }
                             </motion.div>}
                     </AnimatePresence>

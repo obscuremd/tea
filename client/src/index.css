@@ -10,3 +10,7 @@ body{
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+
+.box{
+  @apply border-[1px] border-[#62668980] bg-[#292B3B]
+}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import Post from '../Post'
-import FriendsMobile from '../FriendsMobile'
-import Friends from '../Friends'
+import Post from '../../Atoms/Post'
+import FriendsMobile from '../../Atoms/FriendsMobile'
+import Friends from '../../Atoms/Friends'
 import { useRecoilValue } from 'recoil'
 import { FriendsState } from '../../state/atoms/FriendsState'
 import { useEffect, useState } from 'react';
