@@ -6,10 +6,10 @@ import { Router } from 'express';
 const router = Router()
 
 // get a post
-router.get('/:id', async(req, res)=>{
+router.get('/:email', async(req, res)=>{
 
     try {
-        const post = await Post.findById(req.params.id)
+        const post = await Post.find({email: req.params.email})
         res.status(200).json(post)
     } catch (error) {
         res.status(404).json(error)
@@ -39,19 +39,19 @@ router.post('/:email',async(req, res)=>{
 })
 
 // get all your own posts
-router.get('/profile/:email', async (req, res) => {
-    try {
-        const user = await User.findOne({email:req.params.email})
-        if(!user){
-            res.status(404).json('user not found')
-        }else{
-            const posts = await Post.find({ email : user.email})
-            res.status(200).json(posts)
-        }
-    } catch (error) {
-        res.status(500).json(error);
-    }
-})
+// router.get('/profile/:email', async (req, res) => {
+//     try {
+//         const user = await User.findOne({email:req.params.email})
+//         if(!user){
+//             res.status(404).json('user not found')
+//         }else{
+//             const posts = await Post.find({ email : user.email})
+//             res.status(200).json(posts)
+//         }
+//     } catch (error) {
+//         res.status(500).json(error);
+//     }
+// })
 
 // update your post
 router.put('/:id',async(req, res)=>{
@@ -118,14 +118,14 @@ router.put('/:id/likes', async(req, res)=>{
 })
 
 // get post of following
-router.get('/timeline/:userId', async (req, res) => {
+router.get('/timeline/:email', async (req, res) => {
     try {
-        const currentUser = await User.findById(req.params.userId);
+        const currentUser = await User.findOne({email :req.params.email});
         if(!currentUser) {
             res.status(404).json('user not found')
         }else{
-            const userPosts = await Post.find({ userId: currentUser.id });
-            const friendPosts = await Post.find({ userId: { $in: currentUser.following } });
+            const userPosts = await Post.find({ email: currentUser.email });
+            const friendPosts = await Post.find({ email: { $in: currentUser.following } });
             const timelinePosts = userPosts.concat(friendPosts);
             res.json(timelinePosts);
         }

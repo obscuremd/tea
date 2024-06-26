@@ -1,10 +1,9 @@
 import splash from '../assets/splash.svg'
-import { characters, gradient, gradientTextStyle, Shared, ToasterStyle, Url } from '../assets/Shared'
+import { characters, gradient, gradientTextStyle, Shared } from '../assets/Shared'
 import { useState } from 'react';
 import { EyeClosed, EyeSolid } from 'iconoir-react';
-import axios from 'axios';
 import { motion } from 'framer-motion';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { dotStream } from 'ldrs';
 import { useSignUp } from '@clerk/clerk-react';
 
@@ -111,7 +110,6 @@ const {isLoaded, signUp} =useSignUp()
 
   return (
     <div className='grid md:grid-flow-col md:px-14 px-5 md:gap-36 gap-8'>
-        <Toaster reverseOrder={false} toastOptions={{style:ToasterStyle}}/>
       
       {/* splash & slogan */}
       <div className='flex md:flex-col flex-col-reverse justify-center items-center'>

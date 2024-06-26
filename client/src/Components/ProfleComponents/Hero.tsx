@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Shared } from '../../assets/Shared'
 import { useRecoilValue } from 'recoil'
 import { UserState } from '../../state/atoms/UserState'
-import empty from '../../assets/empty profile.svg'
+import empty from '../../assets/profile.png'
 
 
 const Hero = () => {

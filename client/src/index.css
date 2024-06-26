@@ -14,3 +14,16 @@ body{
 .box{
   @apply border-[1px] border-[#62668980] bg-[#292B3B]
 }
+
+.text_small {
+  @apply text-[0.6rem] md:text-[0.8rem];
+}
+.text_medium {
+  @apply text-base md:text-lg;
+}
+.text_large {
+  @apply text-lg md:text-xl;
+}
+.text_xl {
+  @apply text-xl md:text-2xl;
+}

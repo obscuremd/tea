@@ -136,12 +136,12 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
             {/* Profile and likes */}
             <div className="flex justify-between">
                 {/* profile */}
-                <Link to={`/Userprofile/${users?.username}`}>
+                <Link to={`/Userprofile/${username}`}>
                     <div className="flex items-center gap-3">
-                        <img src={users?.profilePicture || profile} alt="" className="w-9 h-9 object-cover rounded-full bg-[#ffffff25]" />
+                        <img src={profilePicture || profile} alt="" className="w-9 h-9 object-cover rounded-full bg-[#ffffff25]" />
                         <div className="">
-                            <p style={{ fontSize: Shared.Text.large }} className="font-bold capitalize">{users?.username || 'Unknown'}</p>
-                            <p className="text-[#FFFFFF80] flex items-center font-medium" style={{ fontSize: Shared.Text.small }}><MapPin height={Shared.Text.small} color="FFFFFF80" />{date}</p>
+                            <p style={{ fontSize: Shared.Text.large }} className="font-bold capitalize">{username || 'Unknown'}</p>
+                            <p className="text-[#FFFFFF80] flex items-center font-medium capitalize" style={{ fontSize: Shared.Text.small }}><MapPin height={Shared.Text.small} color="FFFFFF80" />{date}</p>
                         </div>
                     </div>
                 </Link>

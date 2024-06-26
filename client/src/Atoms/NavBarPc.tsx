@@ -39,7 +39,7 @@ const NavBarPc = () => {
                     Create Post
             </button>
         {/*others */}
-        <div className='p-5 flex flex-col gap-8 bg-[#292B3B] rounded-3xl'>
+        <div className='box p-5 flex flex-col gap-8 rounded-3xl'>
             <TransparentButton active={active} click={()=>setActive(2)}  icon={<Bookmark/>} state={2} name={'Saved'} link={'/'}/>
             <TransparentButton active={active} click={()=>setActive(3)}  icon={<Settings/>} state={3} name={'settings'} link={'/settings'}/>
             <TransparentButton active={active} click={()=>setActive(4)}  icon={<img src={user?.imageUrl} className='w-9 h-9 rounded-full object-cover'/>} state={4} name={'profile'} link={'/profile'}/>

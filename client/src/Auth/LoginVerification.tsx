@@ -1,26 +1,27 @@
 import splash from '../assets/splash.svg'
 import { gradientTextStyle, Shared } from '../assets/Shared'
-import { useState } from 'react';
-import { useSignUp } from '@clerk/clerk-react';
-import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import GradientButton from '../Atoms/Buttons/GradientButton';
+import { useState } from 'react';
+import { useSignIn } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
 
 interface Props{
   setActives: (value: number) => void
 }
 
-const EmailVerification : React.FC<Props> =({setActives}) => {
-  
-  const {isLoaded, signUp, setActive} =useSignUp()
+
+
+const LoginVerification : React.FC<Props> =({setActives}) => {
+
+  const {isLoaded, signIn, setActive} =useSignIn()
   
   
   const [loading, setLoading] = useState(false)
   
   
   const [code, setCode]= useState('')
-  
-  
+
   const verify =async()=>{
     
     setLoading(true)
@@ -29,10 +30,10 @@ const EmailVerification : React.FC<Props> =({setActives}) => {
     
     try {
       
-      const completeSignUp = await signUp.attemptEmailAddressVerification({code})
+      const completeSignIn = await signIn.attemptFirstFactor({ strategy:'email_code', code})
       
-      if (completeSignUp.status === 'complete') {
-        await setActive({session: completeSignUp.createdSessionId}), console.log(completeSignUp.createdSessionId);
+      if (completeSignIn.status === 'complete') {
+        await setActive({session: completeSignIn.createdSessionId}), console.log(completeSignIn.createdSessionId);
         setTimeout(()=>{
           setLoading(false)
           toast.success('logged in successfully')
@@ -41,7 +42,7 @@ const EmailVerification : React.FC<Props> =({setActives}) => {
       }
       else{
         setLoading(false)
-        console.log(completeSignUp)
+        console.log(completeSignIn)
       }
       
       
@@ -69,7 +70,6 @@ const EmailVerification : React.FC<Props> =({setActives}) => {
     }
   }
   
-  
   return (
     <div className='grid md:grid-flow-col md:px-14 px-5 md:gap-36 gap-8 items-center'>
     
@@ -88,10 +88,10 @@ const EmailVerification : React.FC<Props> =({setActives}) => {
       <div className='w-full md:col-span-4 flex flex-col md:gap-12 gap-5 items-center'>
         <motion.p initial={{ x: '50%', opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3 }} style={{ fontSize: Shared.Text.xxl, fontWeight: '700' }}>Verify Email</motion.p>
 
-        <p className='text_small'>enter a digit otp to verify your email</p>
+        <p className='text_small'>verify with the redirect link sent to your email</p>
 
-          {/* inputs */}
-          <div className='flex flex-col md:gap-10 gap-2 w-full'>
+        {/* inputs */}
+        <div className='flex flex-col md:gap-10 gap-2 w-full'>
             {/* email */}
             <motion.input
               initial={{ x: '50%', opacity: 0 }}
@@ -103,19 +103,17 @@ const EmailVerification : React.FC<Props> =({setActives}) => {
               placeholder="OTP"
               style={{ fontSize: Shared.Text.small }}
               className="p-3 w-full rounded-full bg-[#292B3B] border-[1px] border-[#62668980] outline-none" />
-
-            <p  className='flex gap-2 text_small self-end'>
+        </div>
+    
+            <p  className='flex gap-2 text_small '>
               Didn't recieve the OTP ?
               <button style={gradientTextStyle} onClick={()=>setActives(1)}>Go Back</button>
             </p>
-        
             <GradientButton state={loading} func={verify} text={'Verify'}/>
-        
-          </div>
 
-      </div>
+        </div>
     </div>
     )
   }
   
-  export default EmailVerification
+  export default LoginVerification

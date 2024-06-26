@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import addImage from '../assets/Vector.svg'
-import { Xmark } from 'iconoir-react';
-import { Shared, ToasterStyle } from '../assets/Shared';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { MapPin, Xmark } from 'iconoir-react';
+import { Shared, ToasterStyle, Url } from '../assets/Shared';
+import { useRecoilState } from 'recoil';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { CreatePostState } from '../state/atoms/CreatePostState';
 import {motion} from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
-import { UserState } from '../state/atoms/UserState';
 import { hourglass } from 'ldrs'
+import { useClerk } from '@clerk/clerk-react';
+import { Dropdown } from './DropDown';
+import { useCountries } from 'use-react-countries';
 
 
 
@@ -19,46 +21,58 @@ const CreatePost = () => {
 
 hourglass.register()
 
-  
-  const [image, setImage]=useState(null)
-  const [desc, setDesc] = useState(null)
-  const [imageUrl, setImageUrl]=useState(null)
+  const {user} = useClerk()
+
+
+  const [desc, setDesc] = useState('')
+  const [imageUrl, setImageUrl]=useState('')
   const [imageUploading, setImageUploading] = useState(false)
+
+  // location
+  const { countries } = useCountries();
+  const countryNames = countries.map(country => country.name);
   
+  const locationData = countryNames.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+  const [locationIndex, setLocationIndex] = useState(0)
+  const [location , setLocation] = useState(false)
 
   const storage = getStorage()
 
   const [isCreatePostVisible, setCreatePostVisible] = useRecoilState(CreatePostState)
 
-  const user = useRecoilValue(UserState)
 
-  const ImageChange=async(e)=>{
-    const file = e.target.files[0]
+  const ImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
 
-    if(!file){toast.error("Please provide a valid image"); return}
-    // setImage(file)
-    const imageRef = ref(storage, `socialMedia/posts/${file.name}`)
-    setImageUploading(true)
-    try {
-      const upload = await uploadBytes(imageRef, file)
-      const url = await getDownloadURL(upload.ref)
-      setImageUrl(url)
-      setImageUploading(false)
-    } catch (error) {
-      toast.error('error')
-      console.log(error);
-      setImageUploading(false)
+    if (!files || files.length === 0) {
+      toast.error("Please provide a valid image");
+      return;
     }
-  }
+
+    const file = files[0];
+    const imageRef = ref(storage, `socialMedia/posts/${file.name}`);
+    setImageUploading(true);
+
+    try {
+      const upload = await uploadBytes(imageRef, file);
+      const url = await getDownloadURL(upload.ref);
+      setImageUrl(url);
+      setImageUploading(false);
+    } catch (error) {
+      toast.error('error');
+      setImageUploading(false);
+    }
+  };
+
 
   const createPost =async()=>{
+    setImageUploading(true)
     try {
-      const req = await axios.post(`/api/posts/${user._id}`,{image:imageUrl, desc:desc})
+      const req = await axios.post(`${Url}/api/post/${user?.emailAddresses[0].emailAddress}`,{image:imageUrl,desc,location})
       if(req.status === 200){
         toast.success('image Upload successful')
         setTimeout(()=>window.location.reload(),2000)
       }
-      console.log(req)
     } catch (error) {
       toast.error('error')
     }
@@ -73,7 +87,7 @@ hourglass.register()
       <motion.div className="bg-[#292B3B] rounded-3xl p-6 flex flex-col gap-3">
         <p style={{fontSize:Shared.Text.large, fontWeight:'700'}}>Create Post</p>
         {/* image */}
-        {imageUrl === null 
+        {imageUrl === '' 
         ?// empty image
           <div className="md:w-[637.473px] w-72 md:h-[209.55px] h-24 border-2 border-[#62668980] rounded-3xl flex justify-center items-center">
             {imageUploading
@@ -89,7 +103,7 @@ hourglass.register()
           </div>
           : // FILLED IMAGE
           <div className='md:w-[637.473px] w-72 h-[50vh] flex flex-col justify-center items-end'>
-            <button onClick={()=>setImageUrl(null)} className=''>
+            <button onClick={()=>setImageUrl('')} className=''>
               <Xmark/>
             </button>
             <div className='md:w-[637.473px] w-72 h-[50vh]'>
@@ -98,8 +112,10 @@ hourglass.register()
           </div>
         }
         
+        <Dropdown data={locationData} dropdown={location} setDropdown={setLocation} index={locationIndex} setIndex={setLocationIndex} icon={<MapPin/>} zIndex='50'/>
+
         {/* input */}
-        <input type='text' onChange={(e)=>setDesc(e.target.value)} placeholder='Got any juicy gossip to spill' style={{fontSize:Shared.Text.small}} className="p-3 w-full rounded-full bg-[#292B3B] border-[1px] border-[#62668980] outline-none focus:border-[#797da9]" />
+        <input type='text' onChange={(e)=>setDesc(e?.target?.value)} placeholder='Got any juicy gossip to spill' style={{fontSize:Shared.Text.small}} className="p-3 w-full rounded-full bg-[#292B3B] border-[1px] border-[#62668980] outline-none focus:border-[#797da9]" />
 
         {/* buttons */}
         <div className='flex gap-6'>

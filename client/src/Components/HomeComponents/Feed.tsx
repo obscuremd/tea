@@ -20,20 +20,22 @@ jellyTriangle.register()
         <Hero  />
 
         {loading 
-        ?<div className="w-full flex justify-center md:py-10 md:px-[25vw] py-[30vh]">
-            <l-jelly-triangle size={isMobile?"30":"40"} speed="1.8" color="#572E56"/>
+        ?<div className="w-full flex justify-center md:py-10 md:px-[10vw] py-[30vh]">
+            <l-line-wobble size={isMobile?"200" :"500"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
         </div>  
         
         :  <div className="mt-12 flex flex-col md:gap-12 gap-6">
                 {userPosts && userPosts.map((item, index)=>(
                     <Post key={index} 
                         photo={item.image} 
-                        date={item.createdAt}
+                        date={item.location}
                         // comment={item.comment} 
                         fetchPosts={fetchPosts}
                         desc={item.desc} 
                         like={item.likes.length} 
                         postsDetails={item}
+                        username={item.user.username}
+                        profilePicture={item.user.profilePicture}
                         />
                 ))}
             </div>

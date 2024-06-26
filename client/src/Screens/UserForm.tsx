@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Check, Mail, MapPin, MoneySquare, Suitcase } from 'iconoir-react';
+import { Check, Mail, MapPin} from 'iconoir-react';
 import { Input } from '../Atoms/AuthInput/AuthInput';
 import { AuthDropdown } from '../Atoms/AuthInput/AuthDropDown';
 import { useCountries } from "use-react-countries";
@@ -8,8 +8,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useClerk } from '@clerk/clerk-react';
+import { waveform } from 'ldrs';
 
-
+waveform.register()
 interface ModalProps{
   name: string
   value: boolean 
@@ -27,19 +28,12 @@ const UserForm = () => {
 
     // dropdown state
     const locationData = countryNames.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-    const purposeData = ["Purpose", "Personal", "Business"]
-    const billingData = ["Billing", "Enabled", "Disabled"]
     
     const [locationIndex, setLocationIndex] = useState(0)
-    const [purposeIndex, setPurposeIndex] = useState(0)
-    const [billingIndex, setBillingIndex] = useState(0)
 
     // dropdown visible state
     const [location , setLocation] = useState(false)
-    const [purpose , setPurpose] = useState(false)
-    const [billing , setBilling] = useState(false)
 
-    const [billingBool, setBillingBool] = useState(false)
   
     const [emailFocus, setEmailFocus]= useState(false)
     const [fullName, setFullName]= useState('')
@@ -55,24 +49,18 @@ const UserForm = () => {
 
     setLoading(true)
 
-    billingIndex === 0 && setBillingBool(false)
-    billingIndex === 1 && setBillingBool(true)
-    billingIndex === 2 && setBillingBool(false)
 
     if (fullName === '')        {toast.error('please provide your full name'), setLoading(false)}
-    else if(purposeIndex === 0) {toast.error('please select a purpose'), setLoading(false)}
     else if(gender === '') {toast.error('please select a gender '), setLoading(false)}
     else if(bio === '')         {toast.error('please provide a bio'), setLoading(false)}
 
     else{
         try {
-          await axios.post(`${Url}/user/create`,{
+          await axios.post(`${Url}/api/user/register`,{
             username:   user?.username,
             email:      user?.emailAddresses[0].emailAddress,
             fullName:   fullName,
             location:   locationData[locationIndex],
-            purpose:    purposeData[purposeIndex],
-            billing:    billingBool,
             gender:     gender,
             bio:        bio   
           })
@@ -82,6 +70,7 @@ const UserForm = () => {
             window.location.reload()
           }, 2000);
         } catch (error) {
+          setLoading(false)
           toast.error('error')
         }
     }
@@ -104,7 +93,7 @@ const UserForm = () => {
 )
 
   return (
-    <div className='flex w-full h-screen items-center justify-center'>
+    <div className='flex w-full items-center justify-center'>
       <div className='box w-[90%] md:w-[70%] flex flex-col items-center justify-center rounded-2xl md:px-16 px-4 py-8 gap-5'>
 
         <p className='text_large font-bold capitalize'>let's know you more</p>
@@ -116,14 +105,6 @@ const UserForm = () => {
         {/* location */}
         <AuthDropdown data={locationData} dropdown={location} setDropdown={setLocation} index={locationIndex} setIndex={setLocationIndex} icon={<MapPin/>} zIndex='50'/>
 
-        {/* purpose & billing */}
-        <div className='flex w-full gap-5'>
-          <AuthDropdown data={purposeData} dropdown={purpose} setDropdown={setPurpose} index={purposeIndex} setIndex={setPurposeIndex} icon={<Suitcase/>} zIndex='20'/>
-          <AuthDropdown data={billingData} dropdown={billing} setDropdown={setBilling} index={billingIndex} setIndex={setBillingIndex} icon={<MoneySquare/>} zIndex='20'/>
-
-          
-          
-        </div>
 
         {/* gender */}
         <div className='w-full flex flex-col items-center gap-5'>

@@ -1,8 +1,8 @@
 import splash from '../assets/splash.svg'
-import {  gradientTextStyle, Shared, ToasterStyle } from '../assets/Shared'
+import {  gradientTextStyle, Shared } from '../assets/Shared'
 import { useState } from 'react';
 import { EyeClosed, EyeSolid } from 'iconoir-react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { motion } from "framer-motion"
 import { dotStream } from 'ldrs'
 import { useSignIn } from '@clerk/clerk-react';
@@ -46,8 +46,7 @@ const Login : React.FC<Props> = ({ setActive }) => {
 
       try {
         await signIn.create({
-          strategy:'email_link',
-          redirectUrl:`${window.location.origin}/`,
+          strategy:'email_code',
 
           identifier: email,
           // password: password
@@ -57,7 +56,7 @@ const Login : React.FC<Props> = ({ setActive }) => {
       
       setTimeout(()=>{
         toast.success('code sent')
-        setActive(1)
+        setActive(3)
         setLoading(false)
           // window.location.reload()
         },2000)
@@ -85,7 +84,7 @@ const Login : React.FC<Props> = ({ setActive }) => {
 
   return (
     <div className='grid md:grid-flow-col md:px-14 px-5 md:gap-36 gap-8'>
-      <Toaster reverseOrder={false} toastOptions={{ style: ToasterStyle }} />
+      
 
       {/* splash & slogan */}
       <div className='flex md:flex-col flex-col-reverse justify-center items-center'>

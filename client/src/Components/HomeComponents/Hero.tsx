@@ -5,55 +5,130 @@ import axios from 'axios'
 import { motion } from 'framer-motion'
 import { useClerk } from '@clerk/clerk-react'
 import { useRecoilState } from 'recoil'
-import { FetchLoading, FetchPosts, UserPosts } from '../../state/atoms/UserPostsState'
+import { FetchLoading, UserPosts } from '../../state/atoms/UserPostsState'
+import toast from 'react-hot-toast'
 
+
+interface User {
+    _id: string;
+    email: string;
+    fullName: string;
+    username: string;
+    bio: string;
+    coverPicture: string;
+    profilePicture: string;
+    location: string;
+    gender: string;
+    followers: string[];
+    following: string[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }
+interface Post {
+    _id: string;
+    desc: string;
+    email: string;
+    image: string;
+    likes: string[];
+    location: string;
+    createdAt: string;
+    updatedAt: string;
+    user: User;
+    __v: number;
+  }
 
 
 const Hero= () => {
 
     const [userPosts, setUserPosts] = useRecoilState(UserPosts)
-    const [fetchPosts, setFetchPosts] = useRecoilState(FetchPosts)
     const [loading, setLoading] = useRecoilState(FetchLoading)
 
     const {user} = useClerk()
 
     userPosts
-    fetchPosts
     loading
 
 
     const trending = async () => {
         setLoading(true)
         setFeed(0)
-        const res = await axios.get(`${Url}/api/post/`);
-        const sortedPost = res.data.sort((p1, p2) => { return new Date(p2.likes.length) - new Date(p1.likes.length) })
-        setUserPosts(sortedPost); // Update state with fetched posts
-        setFetchPosts(trending)
-        setLoading(false)
+        try {
+            const res = await axios.get(`${Url}/api/post/`);
+            const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
+            const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
+            const userResponses = await Promise.all(userPromises) 
+            const users = userResponses.map(response => response.data);
+
+            const postsWithUser = sortedPost.map((post, index) => ({
+                ...post,
+                user: users[index],
+            }));
+    
+            console.log(postsWithUser);
+
+            setUserPosts(postsWithUser);
+            setLoading(false)
+        } catch (error) {
+            toast.error('error')
+        }
     }
+
+
     const following = async () => {
         setLoading(true)
-        setFeed(1)
-        // const res = await axios.get(`/api/timeline/${user._id}`);
-        const res = await axios.get('/api/post/');
-        const sortedPost = res.data.sort((p1, p2) => { return new Date(p2.createdAt) - new Date(p1.createdAt) })
-        setUserPosts(sortedPost); // Update state with fetched posts
-        setFetchPosts(following)
-        setLoading(false)
+        setFeed(0)
+        try {
+            const res = await axios.get(`${Url}/api/post/`);
+            const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
+            const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
+            const userResponses = await Promise.all(userPromises) 
+            const users = userResponses.map(response => response.data);
 
+            const postsWithUser = sortedPost.map((post, index) => ({
+                ...post,
+                user: users[index],
+            }));
+    
+            console.log(postsWithUser);
+
+            setUserPosts(postsWithUser);
+            setLoading(false)
+        } catch (error) {
+            toast.error('error')
+        }
     }
+
+
     const nearby = async () => {
         setLoading(true)
-        setFeed(2)
-        const res = await axios.get('/api/post/');
-        const sortedPost = res.data.sort((p1, p2) => { return new Date(p1.createdAt) - new Date(p2.createdAt) })
-        setUserPosts(sortedPost); // Update state with fetched posts
-        setFetchPosts(nearby)
-        setLoading(false)
+        setFeed(0)
+        try {
+            const res = await axios.get(`${Url}/api/post/`);
+            const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
+            const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
+            const userResponses = await Promise.all(userPromises) 
+            const users = userResponses.map(response => response.data);
+
+            const postsWithUser = sortedPost.map((post, index) => ({
+                ...post,
+                user: users[index],
+            }));
+    
+            console.log(postsWithUser);
+
+            setUserPosts(postsWithUser);
+            setLoading(false)
+        } catch (error) {
+            toast.error('error')
+        }
     }
 
+
+    
+
+
     useEffect(() => {
-        setFetchPosts(trending)
         trending()
     }, [])
 
@@ -90,7 +165,7 @@ const Hero= () => {
                         key={id}
                         onClick={func}
                         style={{
-                            background: feed === id && gradient,
+                            background: feed === id ? gradient : "transparent",
                             fontSize: isMobile ? '0.6rem' : '1.2rem',
                             borderWidth: feed === id ? 1 : 0
                         }}

@@ -5,15 +5,18 @@ import { Route, Routes } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CommentState } from '../state/atoms/CommentState';
 import { CreatePostState } from '../state/atoms/CreatePostState';
-import { jellyTriangle } from 'ldrs'
+import { lineWobble } from 'ldrs'
 import { useClerk } from '@clerk/clerk-react';
 import axios from 'axios';
 import UserForm from '../Screens/UserForm';
 import toast from 'react-hot-toast';
 import { UserState } from '../state/atoms/UserState';
 import { Url } from '../assets/Shared';
+import Logo from '../assets/LOGO.svg'
 
-jellyTriangle.register()
+lineWobble.register()
+
+
 
 
 
@@ -45,7 +48,6 @@ function Navigation() {
       const res = await axios.get(`${Url}/api/user/${user?.emailAddresses[0].emailAddress}`)
       setUserState(res?.status)
       setUser(res.data)
-      console.log(res.data)
       setLoading(false)
     } catch (error) {
       toast.error('error')
@@ -60,8 +62,9 @@ function Navigation() {
 
   if(Loading){
     return(
-      <div className="flex justify-center items-center min-h-screen">
-        <l-jelly-triangle size={isMobile?"30":"40"} speed="1.8" color="#572E56"/>
+      <div className="flex flex-col gap-10 justify-center items-center min-h-screen">
+        <img src={Logo} alt="" className='md:w-[25%] w-[40%]' />
+        <l-line-wobble size={isMobile?"200" :"500"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
       </div>
     )
   }
