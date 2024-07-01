@@ -17,9 +17,9 @@ interface User {
     __v: number;
   }
 
-export const UserState = atom<User | []>({
+export const UserState = atom<User | null>({
     key: "user",
-    default: []
+    default: null
     
 })
 

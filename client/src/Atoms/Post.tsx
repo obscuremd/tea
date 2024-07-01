@@ -1,26 +1,25 @@
 import { Bin, Bookmark, Heart, HeartSolid, MapPin, MessageText, MoreHoriz, ShareAndroid, UserPlus, UserXmark } from "iconoir-react"
 import { Shared, ToasterStyle, Url } from "../assets/Shared"
 import { useEffect, useState } from "react"
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState } from "recoil"
 import { CommentState } from "../state/atoms/CommentState"
 import axios from "axios"
 import { Link } from "react-router-dom"
 import profile from '../assets/profile.png'
-import { UserState } from "../state/atoms/UserState"
 import { AnimatePresence, motion } from "framer-motion"
 import toast, { Toaster } from 'react-hot-toast'
+import { useClerk } from "@clerk/clerk-react"
 
-interface Props{
-    profilePicture:string, 
-    username:string, 
-    like:string, 
-    photo:string, 
-    desc:string, 
-    comment:string, 
-    date:string, 
-    postsDetails:string, 
-    fetchPosts
-}
+interface Props {
+    profilePicture: string;
+    username: string;
+    like: number;
+    photo: string;
+    desc: string;
+    comment: string;
+    date: string;
+    postsDetails: posts[];
+  }
 
 interface MenuButtonProps{
     icon: React.ReactNode, 
@@ -29,97 +28,113 @@ interface MenuButtonProps{
     extra?: string
 }
 
-const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, comment, date, postsDetails, fetchPosts }) => {
+interface posts{
+    _id: string;
+    desc: string;
+    email: string;
+    image: string;
+    likes: string[];
+    location: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
 
-    const user = useRecoilValue(UserState)
+const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, comment, date, postsDetails }) => {
+
     const [activeMenu, setActiveMenu] = useState(false)
     const [isCommentVisible, setCommentVisible] = useRecoilState(CommentState)
-    const photos = photo
     const isMobile = window.innerWidth < 768
     const windows = window.innerHeight - (isMobile ? 500 : 200)
-    const [isLiked, setIsLiked] = useState(false)
-    // const [likes, setLikes] =useState(like)
+    const [likes, setLikes] =useState(false)
+    const [likeCount, setLikeCount] = useState(like)
+
+    console.log(likeCount)
 
     const posts = postsDetails
-    const [users, setUsers] = useState()
+    const {user} = useClerk()
 
-    // console.log(user._id);
+    // user email
+    const email = user?.emailAddresses[0].emailAddress
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const res = await axios.get(`${Url}/api/users?userId=${posts.userId}`)
-            setUsers(res.data)
+    useEffect(()=>{
+        if(posts?.likes.includes(email)){
+            setLikes(true)
+        }else{
+            setLikes(false)
         }
+    },[])
 
-        setIsLiked(posts && posts.likes && posts.likes.includes(user._id))
-        fetchUsers()
-    }, [])
+
 
     const followUser = async () => {
         // console.log(user.following)
-        if (user._id === posts.userId) {
-            toast.error("you can't follow yourself")
-        } else {
-            try {
-                await axios.put(`${Url}/api/users/${user._id}/follow`, { userId: posts.userId })
-                toast.success(`${users.username} followed`)
-                fetchPosts()
-            } catch (error) {
-                if (error.response.status === 403) {
-                    toast.error(`you already follow ${users.username}`)
-                }
-                else {
-                    toast.error('error')
-                    console.log(error)
-                }
-            }
-        }
+        // if (user._id === posts.userId) {
+        //     toast.error("you can't follow yourself")
+        // } else {
+        //     try {
+        //         await axios.put(`${Url}/api/users/${user._id}/follow`, { userId: posts.userId })
+        //         toast.success(`${users.username} followed`)
+        //     } catch (error) {
+        //         if (error.response.status === 403) {
+        //             toast.error(`you already follow ${users.username}`)
+        //         }
+        //         else {
+        //             toast.error('error')
+        //             console.log(error)
+        //         }
+        //     }
+        // }
 
     }
 
     const UnFollowUser = async () => {
-        if (user._id === posts.userId) {
-            toast.error("you can't unfollow yourself")
-        } else {
-            try {
-                await axios.put(`${Url}/api/users/${user._id}/unfollow`, { userId: posts.userId })
-                toast.success(`${users.username} unfollowed`)
-                fetchPosts()
-            } catch (error) {
-                if (error.response.status === 403) {
-                    toast.error(`you don't follow ${users.username}`)
-                }
-                else {
-                    toast.error('error')
-                    console.log(error)
-                }
-            }
-        }
+        // if (user._id === posts.userId) {
+        //     toast.error("you can't unfollow yourself")
+        // } else {
+        //     try {
+        //         await axios.put(`${Url}/api/users/${user._id}/unfollow`, { userId: posts.userId })
+        //         toast.success(`${users.username} unfollowed`)
+        //     } catch (error) {
+        //         if (error.response.status === 403) {
+        //             toast.error(`you don't follow ${users.username}`)
+        //         }
+        //         else {
+        //             toast.error('error')
+        //             console.log(error)
+        //         }
+        //     }
+        // }
     }
 
     const handleLike = async () => {
+
+        setLikes(!likes)
+        likes 
+            ? setLikeCount(like - 1) 
+            : setLikeCount(like + 1)
+
         try {
-            await axios.put(`${Url}/api/posts/${posts._id}/likes`, { userId: user._id });
-            fetchPosts();
-            setIsLiked(prevIsLiked => !prevIsLiked);
+            await axios.put(`${Url}/api/post/${posts._id}/likes`, { email });
+            toast.success('liked')
         } catch (error) {
             console.log(error);
+            toast.error('error')
         }
     };
 
     const DeletePost = async () => {
-        if (user._id !== posts.userId) {
-            toast.error("you can only delete your Posts")
-        } else {
-            try {
-                await axios.delete(`/api/posts/${posts._id}`, { userId: user._id });
-                toast.success("Post")
-                fetchPosts()
-            } catch (error) {
-                toast.error('error')
-                console.log(error);
-            }
-        }
+        // if (user._id !== posts.userId) {
+        //     toast.error("you can only delete your Posts")
+        // } else {
+        //     try {
+        //         await axios.delete(`/api/posts/${posts._id}`, { userId: user._id });
+        //         toast.success("Post")
+        //     } catch (error) {
+        //         toast.error('error')
+        //         console.log(error);
+        //     }
+        // }
     }
 
     const MenuButton:React.FC<MenuButtonProps> = ({ icon, text, func, extra }) => (
@@ -166,25 +181,22 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
                                 <MenuButton icon={<Bookmark />} text={'Save'} func={UnFollowUser} />
                                 <MenuButton icon={<ShareAndroid />} text={'Share'} func={followUser} />
                                 <MenuButton icon={<UserXmark />} text={'Unfollow'} func={UnFollowUser} extra= 'text-[#e36db0]' />
-                                {user._id === posts.userId &&
+                                {email === posts.email &&
                                     <MenuButton icon={<Bin />} text={'Delete'} func={DeletePost} extra= 'text-[#e36db0]' />
                                 }
                             </motion.div>}
                     </AnimatePresence>
 
                     <button onClick={handleLike} className="flex items-center py-1 px-2 rounded-2xl bg-[#FFFFFF1A] gap-1" style={{ fontSize: Shared.Text.small }}>
-                        {isLiked ? <HeartSolid color="#D64975" /> : <Heart />}
-                        <p>{like}</p>
+                        {likes ? <HeartSolid color="#D64975" /> : <Heart />}
+                        <p>{likeCount}</p>
                     </button>
                 </div>
             </div>
 
 
             {/* image Post */}
-            {
-                photos &&
-                <img src={photo} alt="" className="w-full object-cover md:mt-12 mt-2 rounded-xl" style={{ height: windows }} />
-            }
+            <img src={photo} alt="" className="w-full object-cover md:mt-12 mt-2 rounded-xl" style={{ height: windows }} />
 
 
             {/* desc */}

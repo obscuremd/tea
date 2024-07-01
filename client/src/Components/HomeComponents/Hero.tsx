@@ -4,9 +4,10 @@ import { Users } from '../../assets/Data'
 import axios from 'axios'
 import { motion } from 'framer-motion'
 import { useClerk } from '@clerk/clerk-react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { FetchLoading, UserPosts } from '../../state/atoms/UserPostsState'
 import toast from 'react-hot-toast'
+import { UserState } from '../../state/atoms/UserState'
 
 
 interface User {
@@ -38,17 +39,16 @@ interface Post {
     __v: number;
   }
 
-
 const Hero= () => {
 
     const [userPosts, setUserPosts] = useRecoilState(UserPosts)
     const [loading, setLoading] = useRecoilState(FetchLoading)
 
     const {user} = useClerk()
+    const MongoUser = useRecoilValue(UserState)
 
     userPosts
     loading
-
 
     const trending = async () => {
         setLoading(true)
@@ -74,12 +74,11 @@ const Hero= () => {
         }
     }
 
-
     const following = async () => {
         setLoading(true)
-        setFeed(0)
+        setFeed(1)
         try {
-            const res = await axios.get(`${Url}/api/post/`);
+            const res = await axios.get(`${Url}/api/post/timeline/${user?.emailAddresses[0].emailAddress}`);
             const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
             const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
             const userResponses = await Promise.all(userPromises) 
@@ -98,11 +97,16 @@ const Hero= () => {
             toast.error('error')
         }
     }
-
 
     const nearby = async () => {
+        
+        const location = MongoUser?.location.toLowerCase()
+        if(!location){
+            return
+        }
+
         setLoading(true)
-        setFeed(0)
+        setFeed(2)
         try {
             const res = await axios.get(`${Url}/api/post/`);
             const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
@@ -113,7 +117,7 @@ const Hero= () => {
             const postsWithUser = sortedPost.map((post, index) => ({
                 ...post,
                 user: users[index],
-            }));
+            })).filter(post => post.location.toLowerCase() === location);
     
             console.log(postsWithUser);
 
@@ -123,27 +127,19 @@ const Hero= () => {
             toast.error('error')
         }
     }
-
-
-    
-
 
     useEffect(() => {
         trending()
     }, [])
 
-
-
-
     const [feed, setFeed] = useState(0)
-
-
 
     const feedTypes = [
         { id: 0, label: "Trending", func: trending },
         { id: 1, label: "Following", func: following },
         { id: 2, label: "Nearby", func: nearby }
     ];
+    
     return (
         <div className="flex flex-col md:gap-12 gap-6 w-full">
             {/* text */}

@@ -8,7 +8,6 @@ import { CreatePostState } from '../state/atoms/CreatePostState';
 import { lineWobble } from 'ldrs'
 import { useClerk } from '@clerk/clerk-react';
 import axios from 'axios';
-import UserForm from '../Screens/UserForm';
 import toast from 'react-hot-toast';
 import { UserState } from '../state/atoms/UserState';
 import { Url } from '../assets/Shared';
@@ -16,16 +15,13 @@ import Logo from '../assets/LOGO.svg'
 
 lineWobble.register()
 
-
-
-
-
 const Home = lazy(()=> import('../Screens/Home'))
 const Profile = lazy(()=> import('../Screens/Profile'))
 const OtherUserProfile = lazy(()=> import('../Screens/OtherUserProfile'))
 const CreatePost = lazy(()=> import('../Atoms/CreatePost'))
 const Comments = lazy(()=> import('../Atoms/Comments'))
 const Settings = lazy(()=> import('../Screens/Settings'))
+const UserForm = lazy(()=> import('../Screens/UserForm'))
 
 function Navigation() {
 
@@ -80,7 +76,11 @@ function Navigation() {
 
   
   return (
-    <Suspense fallback={ <l-jelly-triangle size={isMobile?"30":"40"} speed="1.8" color="#572E56"/> }>
+    <Suspense fallback={ 
+        <div className="flex flex-col gap-10 justify-center items-center min-h-screen">
+          <img src={Logo} alt="" className='md:w-[25%] w-[40%]' />
+          <l-line-wobble size={isMobile?"200" :"500"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
+        </div> }>
       <div className='min-h-screen bg-[#191A23] text-white min-w-full flex flex-col-reverse md:flex-row gap-[3%]'>
           {isMobile? <NavBarMobile/> : <NavBarPc/>}
           <Routes>
