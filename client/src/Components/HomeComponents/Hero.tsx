@@ -8,6 +8,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { FetchLoading, UserPosts } from '../../state/atoms/UserPostsState'
 import toast from 'react-hot-toast'
 import { UserState } from '../../state/atoms/UserState'
+import { Input } from '../../Atoms/Input'
 
 
 interface User {
@@ -151,7 +152,7 @@ const Hero= () => {
             {/* search */}
             <div className="flex items-center gap-2 md:gap-4">
                 <motion.img initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { delay: 0.3 } }} src={Users[0].profilePicture} alt="" className="md:w-12 w-7 md:h-12 h-7 rounded-full object-cover" />
-                <motion.input initial={{ x: '50%', opacity: 0 }} animate={{ x: 0, opacity: 1, transition: { delay: 0.4 } }} whileFocus={{ borderColor: '#797da9' }} type="text" placeholder="Find The Tea" style={{ fontSize: Shared.Text.small }} className="p-3 w-full rounded-full bg-[#292B3B] border-[1px] border-[#62668980] outline-none" />
+                <Input placeholder='FInd the tea' size='small' type='text' onChange={()=>console.log(2)}/>
             </div>
 
             {/* options */}

@@ -1,14 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
+import {  AnimatePresence, motion } from "framer-motion";
 import { NavArrowDown } from "iconoir-react";
+import React, { useState } from 'react';
 import { Shared } from "../assets/Shared";
-import React from 'react';
 
 interface Props {
   dropdown: boolean;
   setDropdown: (value: boolean) => void;
-  data: string[] | React.ReactNode[];
-  index: number;
-  setIndex: (value: number) => void;
+  data: string[];
   number?: boolean;
   truncate?: string;
   dataStyle?: string;
@@ -16,11 +14,11 @@ interface Props {
   zIndex?: string;
 }
 
-export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, index, setIndex, icon, truncate, dataStyle,zIndex }) => {
+export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, icon, truncate, zIndex }) => {
   
   truncate
   const projects = data;
-  
+  const [inputValue, setInputValue] = useState('');
   return (
     
       <motion.button
@@ -31,7 +29,7 @@ export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, index, 
             <div className='box p-1 rounded-full'>
                 {icon}
             </div>
-        <p className={` ${dataStyle}`}>{projects[index]}</p>
+            <input type="text" onClick={()=>setDropdown(!dropdown)} className="w-full border-transparent flex items-center justify-center text-center" value={inputValue} onChange={(e)=>setInputValue(e.target.value)}/>
         <NavArrowDown className="text-[#62668980]" />
         {/* options */}
         <AnimatePresence>
@@ -42,9 +40,11 @@ export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, index, 
             exit={{ y: -10, opacity: 0 }}
             className={`box absolute top-[120%] py-3 px-3 rounded-2xl flex flex-col gap-2 backdrop-blur-lg w-full z-50 max-h-[30vh] overflow-y-scroll`}
             >
-            {projects.map((item, index) => (
+            {projects
+              .filter(project => project.toLowerCase().includes(inputValue.toLowerCase()))
+              .map((item, index) => (
               <button
-              onClick={() => setIndex(index)}
+              onClick={() => setInputValue(item)}
               className="py-1 px-4 border-[1px] border-[#62668988] rounded-xl w-full truncate min-h-8"
               key={index}
               >
@@ -57,4 +57,5 @@ export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, index, 
       </motion.button>
   );
 };
+
 

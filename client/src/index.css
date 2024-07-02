@@ -51,3 +51,8 @@ body{
 .text_xl {
   @apply text-xl md:text-2xl;
 }
+
+input{
+  @apply bg-[#292B3B] border-[1px] border-[#62668980] outline-none
+}
+
