@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import addImage from '../assets/Vector.svg'
 import { MapPin, Xmark } from 'iconoir-react';
-import { Shared, ToasterStyle, Url } from '../assets/Shared';
+import { isMobile, Shared, ToasterStyle, Url } from '../assets/Shared';
 import { useRecoilState } from 'recoil';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { CreatePostState } from '../state/atoms/CreatePostState';
@@ -10,8 +10,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { hourglass } from 'ldrs'
 import { useClerk } from '@clerk/clerk-react';
-import { Dropdown } from './DropDown';
 import { useCountries } from 'use-react-countries';
+import { Dropdown } from './Inputs/DropDown';
 
 
 
@@ -28,13 +28,15 @@ hourglass.register()
   const [imageUrl, setImageUrl]=useState('')
   const [imageUploading, setImageUploading] = useState(false)
 
+  const [loading, setLoading] = useState(false)
+
   // location
   const { countries } = useCountries();
   const countryNames = countries.map(country => country.name);
   
   const locationData = countryNames.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-  const [locationIndex, setLocationIndex] = useState(0)
-  const [location , setLocation] = useState(false)
+  const [dropdown, setDropdown] = useState(false)
+  const [location , setLocation] = useState('')
 
   const storage = getStorage()
 
@@ -66,7 +68,7 @@ hourglass.register()
 
 
   const createPost =async()=>{
-    setImageUploading(true)
+    setLoading(true)
     try {
       const req = await axios.post(`${Url}/api/post/${user?.emailAddresses[0].emailAddress}`,{image:imageUrl,desc,location})
       if(req.status === 200){
@@ -75,6 +77,7 @@ hourglass.register()
       }
     } catch (error) {
       toast.error('error')
+      setLoading(false)
     }
   }
 
@@ -98,7 +101,7 @@ hourglass.register()
                 style={{fontSize:Shared.Text.small, fontWeight:'700'}} className='flex gap-1 cursor-pointer items-center'>
                   <img style={{width:Shared.Text.large}} src={addImage} alt="" />Add A Picture ?
               </label>
-              <input type="file" id='fileInput' accept='image' placeholder='Add A Picture ?' style={{display:'none'}} onChange={ImageChange}/>
+              <input type="file" id='fileInput' accept='image/*' placeholder='Add A Picture ?' style={{display:'none'}} onChange={ImageChange}/>
             </div>}
           </div>
           : // FILLED IMAGE
@@ -112,26 +115,30 @@ hourglass.register()
           </div>
         }
         
-        <Dropdown data={locationData} dropdown={location} setDropdown={setLocation} index={locationIndex} setIndex={setLocationIndex} icon={<MapPin/>} zIndex='50'/>
+        <Dropdown data={locationData} dropdown={dropdown} setDropdown={setDropdown} setData={setLocation} icon={<MapPin/>} zIndex='50' placeholder="Where're you posting from ?"/>
 
         {/* input */}
         <input type='text' onChange={(e)=>setDesc(e?.target?.value)} placeholder='Got any juicy gossip to spill' style={{fontSize:Shared.Text.small}} className="p-3 w-full rounded-full bg-[#292B3B] border-[1px] border-[#62668980] outline-none focus:border-[#797da9]" />
 
         {/* buttons */}
-        <div className='flex gap-6'>
-          <button
-            onClick={createPost}
-            style={{background:'linear-gradient(129deg, #D64975 -54.57%, #152046 94.11%)',fontSize: Shared.Text.large,}} 
-            className="md:px-12 md:py-2 px-2 py-1 border-[#62668980] border-[1px] rounded-full w-full font-bold">
-              Create Post
-          </button>
-          <button
-            onClick={()=>setCreatePostVisible(!isCreatePostVisible)}
-            style={{background:'#82828280',fontSize: Shared.Text.large,}} 
-            className="md:px-12 md:py-2 px-2 py-1 border-[#62668980] border-[1px] rounded-full w-full font-bold">
-              Cancel
-          </button>
-        </div>
+        {
+          loading
+          ?<l-line-wobble size={isMobile?"250" :"600"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
+          :<div className='flex gap-6'>
+            <button
+              onClick={createPost}
+              style={{background:'linear-gradient(129deg, #D64975 -54.57%, #152046 94.11%)',fontSize: Shared.Text.large,}} 
+              className="md:px-12 md:py-2 px-2 py-1 border-[#62668980] border-[1px] rounded-full w-full font-bold">
+                Create Post
+            </button>
+            <button
+              onClick={()=>setCreatePostVisible(!isCreatePostVisible)}
+              style={{background:'#82828280',fontSize: Shared.Text.large,}} 
+              className="md:px-12 md:py-2 px-2 py-1 border-[#62668980] border-[1px] rounded-full w-full font-bold">
+                Cancel
+            </button>
+          </div>
+        }
       </motion.div>
     </motion.div>
   )

@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { UserState } from '../state/atoms/UserState';
 import { Url } from '../assets/Shared';
 import Logo from '../assets/LOGO.svg'
+import Fetch from '../Atoms/Fetch';
 
 lineWobble.register()
 
@@ -38,20 +39,19 @@ function Navigation() {
   const [User, setUser] = useRecoilState(UserState)
   User
 
-  const fetchUser =async() => {
-    setLoading(true)
-    try {
-      const res = await axios.get(`${Url}/api/user/${user?.emailAddresses[0].emailAddress}`)
-      setUserState(res?.status)
-      setUser(res.data)
-      setLoading(false)
-    } catch (error) {
-      toast.error('error')
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
+    const fetchUser =async() => {
+      setLoading(true)
+      try {
+        const res = await axios.get(`${Url}/api/user/${user?.emailAddresses[0].emailAddress}`)
+        setUserState(res?.status)
+        setUser(res.data)
+        setLoading(false)
+      } catch (error) {
+        toast.error('error')
+        setLoading(false)
+      }
+    }
     fetchUser();
     
   }, []);
@@ -64,7 +64,6 @@ function Navigation() {
       </div>
     )
   }
- 
 
   if (userState === 0){
     return(
@@ -82,6 +81,7 @@ function Navigation() {
           <l-line-wobble size={isMobile?"200" :"500"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
         </div> }>
       <div className='min-h-screen bg-[#191A23] text-white min-w-full flex flex-col-reverse md:flex-row gap-[3%]'>
+          <Fetch/>
           {isMobile? <NavBarMobile/> : <NavBarPc/>}
           <Routes>
               <Route path='/' element={<Home/>}/>

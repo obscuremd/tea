@@ -10,24 +10,22 @@ import { AnimatePresence, motion } from "framer-motion"
 import toast, { Toaster } from 'react-hot-toast'
 import { useClerk } from "@clerk/clerk-react"
 
-interface Props {
-    profilePicture: string;
+interface User {
+    _id: string;
+    email: string;
+    fullName: string;
     username: string;
-    like: number;
-    photo: string;
-    desc: string;
-    comment: string;
-    date: string;
-    postsDetails: posts[];
+    bio: string;
+    coverPicture: string;
+    profilePicture: string;
+    location: string;
+    gender: string;
+    followers: string[];
+    following: string[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
   }
-
-interface MenuButtonProps{
-    icon: React.ReactNode, 
-    text: string, 
-    func: ()=>void, 
-    extra?: string
-}
-
 interface posts{
     _id: string;
     desc: string;
@@ -37,74 +35,90 @@ interface posts{
     location: string;
     createdAt: string;
     updatedAt: string;
+    user:User,
     __v: number;
 }
+interface Props {
+    profilePicture: string;
+    username: string;
+    like: number;
+    photo: string;
+    desc: string;
+    comment: string;
+    date: string;
+    postsDetails: posts;
+}
+
+interface MenuButtonProps{
+    icon: React.ReactNode, 
+    text: string, 
+    func: ()=>void, 
+    extra?: string
+}
+
+
 
 const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, comment, date, postsDetails }) => {
 
+    // active states
     const [activeMenu, setActiveMenu] = useState(false)
     const [isCommentVisible, setCommentVisible] = useRecoilState(CommentState)
+    const [following , setFollowing] = useState(false)
+    
+    // mobile config
     const isMobile = window.innerWidth < 768
     const windows = window.innerHeight - (isMobile ? 500 : 200)
+    
+    // likes
     const [likes, setLikes] =useState(false)
     const [likeCount, setLikeCount] = useState(like)
 
-    console.log(likeCount)
-
+    // post defaults
     const posts = postsDetails
+    // user
     const {user} = useClerk()
+
 
     // user email
     const email = user?.emailAddresses[0].emailAddress
 
     useEffect(()=>{
-        if(posts?.likes.includes(email)){
+        if(posts?.likes.includes(email || '')){
             setLikes(true)
         }else{
             setLikes(false)
         }
-    },[])
+
+        if(posts.user.followers.includes(email || '')){
+            setFollowing(true)
+        }else{
+            setFollowing(false)
+        }
+    },[posts])
 
 
 
     const followUser = async () => {
-        // console.log(user.following)
-        // if (user._id === posts.userId) {
-        //     toast.error("you can't follow yourself")
-        // } else {
-        //     try {
-        //         await axios.put(`${Url}/api/users/${user._id}/follow`, { userId: posts.userId })
-        //         toast.success(`${users.username} followed`)
-        //     } catch (error) {
-        //         if (error.response.status === 403) {
-        //             toast.error(`you already follow ${users.username}`)
-        //         }
-        //         else {
-        //             toast.error('error')
-        //             console.log(error)
-        //         }
-        //     }
-        // }
+        console.log(email)
+        if (email === posts.email) {
+            toast.error("you can't follow yourself")
+        } else {
+            try {
+                const res = await axios.put(`${Url}/api/user/follow/${email}`, { email: posts.email })
+                console.log(res.data)
 
-    }
-
-    const UnFollowUser = async () => {
-        // if (user._id === posts.userId) {
-        //     toast.error("you can't unfollow yourself")
-        // } else {
-        //     try {
-        //         await axios.put(`${Url}/api/users/${user._id}/unfollow`, { userId: posts.userId })
-        //         toast.success(`${users.username} unfollowed`)
-        //     } catch (error) {
-        //         if (error.response.status === 403) {
-        //             toast.error(`you don't follow ${users.username}`)
-        //         }
-        //         else {
-        //             toast.error('error')
-        //             console.log(error)
-        //         }
-        //     }
-        // }
+                if(res.data === 'user followed'){
+                    toast.success(`${posts.user.username} followed`)
+                    setFollowing(true)
+                }else if (res.data === 'user unfollowed'){
+                    toast.success(`${posts.user.username} unfollowed`)
+                    setFollowing(false)
+                }
+            } catch (error) {
+                toast.error('error')
+                console.log(error)
+            }
+        }
     }
 
     const handleLike = async () => {
@@ -124,17 +138,18 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
     };
 
     const DeletePost = async () => {
-        // if (user._id !== posts.userId) {
-        //     toast.error("you can only delete your Posts")
-        // } else {
-        //     try {
-        //         await axios.delete(`/api/posts/${posts._id}`, { userId: user._id });
-        //         toast.success("Post")
-        //     } catch (error) {
-        //         toast.error('error')
-        //         console.log(error);
-        //     }
-        // }
+        if (email !== posts.email) {
+            toast.error("you can only delete your Posts")
+        } else {
+            try {
+                await axios.delete(`${Url}/api/post/${posts._id}`);
+                toast.success("Post deleted successfully")
+                window.location.reload()
+            } catch (error) {
+                toast.error('error')
+                console.log(error);
+            }
+        }
     }
 
     const MenuButton:React.FC<MenuButtonProps> = ({ icon, text, func, extra }) => (
@@ -176,11 +191,11 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
                                 className="absolute top-5 bg-[#454862c9] border-[1px] border-[#626689] p-5 backdrop-blur-lg flex flex-col gap-2 rounded-xl"
                                 style={{ fontSize: Shared.Text.small }}>
 
-                                <MenuButton icon={<UserPlus />} text={'Follow'} func={followUser} />
+                                {!following && email !== posts.email && <MenuButton icon={<UserPlus />} text={'Follow'} func={followUser} />}
+                                {following && email !== posts.email && <MenuButton icon={<UserXmark />} text={'Unfollow'} func={followUser} extra= 'text-[#e36db0]' />}
 
-                                <MenuButton icon={<Bookmark />} text={'Save'} func={UnFollowUser} />
+                                <MenuButton icon={<Bookmark />} text={'Save'} func={followUser} />
                                 <MenuButton icon={<ShareAndroid />} text={'Share'} func={followUser} />
-                                <MenuButton icon={<UserXmark />} text={'Unfollow'} func={UnFollowUser} extra= 'text-[#e36db0]' />
                                 {email === posts.email &&
                                     <MenuButton icon={<Bin />} text={'Delete'} func={DeletePost} extra= 'text-[#e36db0]' />
                                 }

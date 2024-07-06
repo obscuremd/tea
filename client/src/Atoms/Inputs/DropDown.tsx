@@ -1,24 +1,27 @@
 import {  AnimatePresence, motion } from "framer-motion";
 import { NavArrowDown } from "iconoir-react";
 import React, { useState } from 'react';
-import { Shared } from "../assets/Shared";
+import { Shared } from "../../assets/Shared";
 
 interface Props {
   dropdown: boolean;
   setDropdown: (value: boolean) => void;
   data: string[];
+  setData: (value: string) => void;
   number?: boolean;
   truncate?: string;
   dataStyle?: string;
   icon:React.ReactNode;
   zIndex?: string;
+  placeholder?: string;
 }
 
-export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, icon, truncate, zIndex }) => {
+export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, icon, truncate, zIndex, setData, placeholder }) => {
   
   truncate
   const projects = data;
   const [inputValue, setInputValue] = useState('');
+  setData(inputValue)
   return (
     
       <motion.button
@@ -29,7 +32,7 @@ export const Dropdown: React.FC<Props> = ({ dropdown, setDropdown, data, icon, t
             <div className='box p-1 rounded-full'>
                 {icon}
             </div>
-            <input type="text" onClick={()=>setDropdown(!dropdown)} className="w-full border-transparent flex items-center justify-center text-center" value={inputValue} onChange={(e)=>setInputValue(e.target.value)}/>
+            <input placeholder={placeholder} type="text" onClick={()=>setDropdown(!dropdown)} className="w-full border-transparent flex items-center justify-center text-center" value={inputValue} onChange={(e)=>setInputValue(e.target.value)}/>
         <NavArrowDown className="text-[#62668980]" />
         {/* options */}
         <AnimatePresence>

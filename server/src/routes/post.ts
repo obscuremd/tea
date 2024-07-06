@@ -57,17 +57,17 @@ router.post('/:email',async(req, res)=>{
 router.put('/:id',async(req, res)=>{
 
     try {
-        
         const post = await Post.findByIdAndUpdate(req.params.id)
 
         if(!post){
             res.status(404).json('post not found')
         }
-        else if(req.body.email === post.email){
+        else if(req.body.email !== post.email){
+            res.status(401).json('can only update your post')
+        }else{
             await post.updateOne({$set:(req.body)})
             res.status(200).json("post updated")
-        }else{
-            res.status(401).json('can only update your post')
+            
         }
     } catch (error) {
         res.status(404).json(error)
@@ -76,22 +76,20 @@ router.put('/:id',async(req, res)=>{
 
 // delete your post
 router.delete('/:id',async(req, res)=>{
-
     try {
-        
-        const post = await Post.findByIdAndDelete(req.params.id)
-
+        const post = await Post.findById(req.params.id)
         if(!post){
-            res.status(404).json('post not found')
+            res.status(404).json('can only update your post')
         }
-        else if(req.body.email === post.email){
-            await post.deleteOne({$set:(req.body)})
+        else if(req.body.email !== post.email){
+            res.status(403).json('can only update your post')
+        }
+        else{
+            await post.deleteOne()
             res.status(200).json("post deleted successfully")
-        }else{
-            res.status(401).json('can only update your post')
         }
     } catch (error) {
-        res.status(404).json(error)
+        res.status(500).json(error)
     }
 })
 

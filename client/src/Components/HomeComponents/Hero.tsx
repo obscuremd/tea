@@ -8,7 +8,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import { FetchLoading, UserPosts } from '../../state/atoms/UserPostsState'
 import toast from 'react-hot-toast'
 import { UserState } from '../../state/atoms/UserState'
-import { Input } from '../../Atoms/Input'
+import { Input } from '../../Atoms/Inputs/Input'
 
 
 interface User {

@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useClerk } from '@clerk/clerk-react';
 import { waveform } from 'ldrs';
+import { TextArea } from '../Atoms/AuthInput/AuthTextArea';
 
 waveform.register()
 interface ModalProps{
@@ -29,10 +30,12 @@ const UserForm = () => {
     // dropdown state
     const locationData = countryNames.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
     
-    const [locationIndex, setLocationIndex] = useState(0)
 
     // dropdown visible state
-    const [location , setLocation] = useState(false)
+    const [dropdown, setDropdown] = useState(false)
+    const [location , setLocation] = useState('')
+
+    console.log(location)
 
   
     const [emailFocus, setEmailFocus]= useState(false)
@@ -41,6 +44,7 @@ const UserForm = () => {
     const [bioFocus, setBioFocus]= useState(false)
     const [bio, setBio]= useState('')
 
+    console.log(bio)
     const [gender, setGender]= useState('')
 
   console.log()
@@ -60,7 +64,7 @@ const UserForm = () => {
             username:   user?.username,
             email:      user?.emailAddresses[0].emailAddress,
             fullName:   fullName,
-            location:   locationData[locationIndex],
+            location:   location,
             gender:     gender,
             bio:        bio   
           })
@@ -103,7 +107,7 @@ const UserForm = () => {
           <Input icon={<Mail />} isFocused={emailFocus} focus={()=>setEmailFocus(true)} blur={()=>setEmailFocus(false)} onChange={(e)=>setFullName(e.target.value)} placeholder={'Full name'} type={'email'}/>
         </div>
         {/* location */}
-        <AuthDropdown data={locationData} dropdown={location} setDropdown={setLocation} index={locationIndex} setIndex={setLocationIndex} icon={<MapPin/>} zIndex='50'/>
+        <AuthDropdown placeholder='Please choose your location' data={locationData} dropdown={dropdown} setDropdown={setDropdown} setData={setLocation} icon={<MapPin/>} zIndex='50'/>
 
 
         {/* gender */}
@@ -116,7 +120,7 @@ const UserForm = () => {
           </div>
         </div>
           {/* bio */}
-        <Input icon={<Mail />} isFocused={bioFocus} focus={()=>setBioFocus(true)} blur={()=>setEmailFocus(false)} onChange={(e)=>setBio(e.target.value)} placeholder={'Bio'} type={'email'} height='h-[20vh]'/>
+        <TextArea icon={<Mail />} isFocused={bioFocus} focus={()=>setBioFocus(true)} blur={()=>setBioFocus(false)} onChange={(e)=>setBio(e.target.value)} placeholder={'Bio'} height='h-[17vh]'/>
 
         
         <motion.button

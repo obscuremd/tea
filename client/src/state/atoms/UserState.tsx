@@ -23,6 +23,11 @@ export const UserState = atom<User | null>({
     
 })
 
+export const UserFetching = atom({
+    key:"userFetching",
+    default:false
+})
+
 export const ActiveUserState = atom({
     key: "activeUser",
     default: false
