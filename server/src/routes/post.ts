@@ -39,19 +39,19 @@ router.post('/:email',async(req, res)=>{
 })
 
 // get all your own posts
-// router.get('/profile/:email', async (req, res) => {
-//     try {
-//         const user = await User.findOne({email:req.params.email})
-//         if(!user){
-//             res.status(404).json('user not found')
-//         }else{
-//             const posts = await Post.find({ email : user.email})
-//             res.status(200).json(posts)
-//         }
-//     } catch (error) {
-//         res.status(500).json(error);
-//     }
-// })
+router.get('/profile/:email', async (req, res) => {
+    try {
+        const user = await User.findOne({email:req.params.email})
+        if(!user){
+            res.status(404).json('user not found')
+        }else{
+            const posts = await Post.find({ email : user.email})
+            res.status(200).json(posts)
+        }
+    } catch (error) {
+        res.status(500).json(error);
+    }
+})
 
 // update your post
 router.put('/:id',async(req, res)=>{

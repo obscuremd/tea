@@ -33,3 +33,8 @@ export const ActiveUserState = atom({
     default: false
     // default:true
 })
+
+export const ProfileFeedState = atom({
+    key: "profileFeed",
+    default: 0
+})

@@ -142,7 +142,7 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
             toast.error("you can only delete your Posts")
         } else {
             try {
-                await axios.delete(`${Url}/api/post/${posts._id}`);
+                await axios.delete(`${Url}/api/post/${posts._id}`,{data:{email:email}});
                 toast.success("Post deleted successfully")
                 window.location.reload()
             } catch (error) {

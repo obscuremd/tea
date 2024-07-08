@@ -14,6 +14,7 @@ body{
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 5px; /* Width of the scrollbar */
+  height: 5px; /* Height of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {

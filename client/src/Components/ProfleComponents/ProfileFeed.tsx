@@ -8,10 +8,41 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { UserState } from '../../state/atoms/UserState';
 import { isMobile, Url } from '../../assets/Shared';
+interface User {
+  _id: string;
+  email: string;
+  fullName: string;
+  username: string;
+  bio: string;
+  coverPicture: string;
+  profilePicture: string;
+  location: string;
+  gender: string;
+  followers: string[];
+  following: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface Post {
+  _id: string;
+  desc: string;
+  email: string;
+  image: string;
+  likes: string[];
+  location: string;
+  createdAt: string;
+  updatedAt: string;
+  user: User;
+  __v: number;
+}
+
+type UserPosts = Post[];
 
 const ProfileFeed = () => {
 
-  const [userPosts, setUserPosts] = useState([])
+  const [userPosts, setUserPosts] = useState<UserPosts>()
   const friendState = useRecoilValue(FriendsState)
   const user = useRecoilValue(UserState)
 
@@ -28,18 +59,17 @@ const ProfileFeed = () => {
 
 
 
-        {userPosts.length === 0
+        {userPosts && userPosts.length === 0
           ? <p className='md:w-[50vw] w-screen text-center'>No Posts yet</p>
-          : (userPosts.map((item, index) => (
+          : (userPosts && userPosts.map((item, index) => (
             <Post key={index}
               photo={item?.image}
               date={item?.createdAt}
               // profilePicture={Users[item.userId].profilePicture} 
               // comment={item.comment} 
               desc={item?.desc}
-              like={item?.like}
+              like={item?.likes.length}
               postsDetails={item}
-              fetchPosts={fetchPosts}
             // username={Users[item.userId].username}
             />
           )))
