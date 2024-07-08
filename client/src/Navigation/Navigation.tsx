@@ -52,6 +52,7 @@ function Navigation() {
         setLoading(false)
       }
     }
+
     fetchUser();
     
   }, []);

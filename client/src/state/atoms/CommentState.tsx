@@ -9,3 +9,8 @@ export const CommentId = atom({
     key: "commentId",
     default:''
 })
+
+export const CommentCount = atom({
+    key: "commentCount",
+    default: []
+})

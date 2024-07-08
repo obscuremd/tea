@@ -58,12 +58,15 @@ router.get('/',async(req, res) =>{
 })
 
 router.delete('/:id', async(req, res) =>{
+    const post = await Posts.findById(req.body.postId)
     try {
         const comment = await Comment.findById(req.params.id)
         if(!comment){
             res.status(404).json('comment not found')
         }
         else if (comment.email === req.body.email) {
+            post?.updateOne({pull:{comment:comment.id}})
+            comment.deleteOne()
             res.status(200).json('comment deleted') 
         } else {
             res.status(500).json('you can only delete your comment')

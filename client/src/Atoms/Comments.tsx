@@ -1,14 +1,27 @@
 import { SendDiagonal, Xmark } from "iconoir-react"
 import { Posts, Users } from "../assets/Data"
-import { Shared } from "../assets/Shared"
-import { useRecoilState } from "recoil"
-import { CommentState } from "../state/atoms/CommentState"
+import { Shared, Url } from "../assets/Shared"
+import { useRecoilState, useRecoilValue } from "recoil"
+import { CommentId, CommentState } from "../state/atoms/CommentState"
 import { motion } from "framer-motion"
+import axios from "axios"
+import { useEffect } from "react"
 
 
 const Comments =()=>{
 
     const [ isCommentVisible, setCommentVisible]= useRecoilState(CommentState)
+    const commentId = useRecoilValue(CommentId)
+    console.log(commentId)
+
+    useEffect(()=>{
+        const fetchComments = async()=>{
+            const res = await axios.get(`${Url}/api/comment/${commentId}`)
+            console.log(res.data)
+        }
+
+        fetchComments()
+    },[])
 
 return (
     <motion.div  className="fixed top-10 w-full h-full flex justify-center md:items-center items-end bg-[#2020209d] md:p-5 pb-[10%] pr-[5%] backdrop-filter backdrop-blur-sm">

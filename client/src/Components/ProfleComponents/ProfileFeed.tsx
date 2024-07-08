@@ -34,6 +34,7 @@ interface Post {
   image: string;
   likes: string[];
   location: string;
+  comments: string[];
   createdAt: string;
   updatedAt: string;
   user: User;
@@ -89,7 +90,7 @@ const ProfileFeed = () => {
                   photo={item?.image}
                   date={item?.location}
                   profilePicture={item.user.profilePicture}
-                  comment={0} 
+                  comment={item.comments.length} 
                   desc={item?.desc}
                   like={item?.likes.length}
                   postsDetails={item}

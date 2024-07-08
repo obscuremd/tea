@@ -24,6 +24,7 @@ interface User {
     image: string;
     likes: string[];
     location: string;
+    comments: string[];
     createdAt: string;
     updatedAt: string;
     user: User;

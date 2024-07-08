@@ -28,7 +28,7 @@ jellyTriangle.register()
                     <Post key={index} 
                         photo={item.image} 
                         date={item.location}
-                        comment={0} 
+                        comment={item.comments.length} 
                         desc={item.desc} 
                         like={item.likes.length} 
                         postsDetails={item}

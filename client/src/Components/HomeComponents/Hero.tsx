@@ -34,6 +34,7 @@ interface Post {
     image: string;
     likes: string[];
     location: string;
+    comments:[],
     createdAt: string;
     updatedAt: string;
     user: User;
