@@ -18,7 +18,7 @@ return (
             
             <p style={{fontSize:Shared.Text.xl}} className="font-bold flex items-center">
                 Comments
-                <button onClick={()=>setCommentVisible(false)}>
+                <button onClick={()=>setCommentVisible(!isCommentVisible)}>
                     <Xmark/>
                 </button>
             </p>

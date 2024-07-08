@@ -2,7 +2,7 @@ import { Bin, Bookmark, Heart, HeartSolid, MapPin, MessageText, MoreHoriz, Share
 import { Shared, ToasterStyle, Url } from "../assets/Shared"
 import { useEffect, useState } from "react"
 import { useRecoilState } from "recoil"
-import { CommentState } from "../state/atoms/CommentState"
+import { CommentId, CommentState } from "../state/atoms/CommentState"
 import axios from "axios"
 import { Link } from "react-router-dom"
 import profile from '../assets/profile.png'
@@ -62,9 +62,14 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
 
     // active states
     const [activeMenu, setActiveMenu] = useState(false)
-    const [isCommentVisible, setCommentVisible] = useRecoilState(CommentState)
-    const [following , setFollowing] = useState(false)
     
+    const [following , setFollowing] = useState(false)
+
+    // comment
+    const [isCommentVisible, setCommentVisible] = useRecoilState(CommentState)
+    const [commentId, setCommentId] = useRecoilState(CommentId)
+    commentId
+
     // mobile config
     const isMobile = window.innerWidth < 768
     const windows = window.innerHeight - (isMobile ? 500 : 200)
@@ -219,7 +224,7 @@ const Post:React.FC<Props> = ({ profilePicture, username, like, photo, desc, com
                 style={{ background: 'linear-gradient(129deg, #D64975 -54.57%, #152046 94.11%)', fontSize: Shared.Text.small }}
                 className="md:p-5 p-2 md:mt-12 mt-2 border-[1px] border-[#626689] rounded-xl font-bold">
                 <p>{desc}</p>
-                <button onClick={() => setCommentVisible(!isCommentVisible)} className="md:p-2 p-1 bg-[#82828280] inline-flex gap-1 rounded-3xl md:mt-6 mt-3">
+                <button onClick={() => [setCommentVisible(!isCommentVisible), setCommentId(posts._id)]} className="md:p-2 p-1 bg-[#82828280] inline-flex gap-1 rounded-3xl md:mt-6 mt-3">
                     <MessageText />
                     <p>{comment} Comments</p>
                 </button>

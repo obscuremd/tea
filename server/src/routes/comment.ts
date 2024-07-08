@@ -27,7 +27,7 @@ router.post('/:id',async(req, res) =>{
     
 })
 
-// get comments
+// get post comments
 router.get('/:id',async(req, res) =>{
     const postId = req.params.id
     try {
@@ -37,6 +37,20 @@ router.get('/:id',async(req, res) =>{
         }
         else {
             res.status(200).json(comment. filter(comment => comment.postId === postId) )
+        }
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+// get all comments
+router.get('/',async(req, res) =>{
+    try {
+        const comment = await Comment.find()
+        if(!comment){
+            res.status(404).json('comment not found')
+        }
+        else {
+            res.status(200).json(comment)
         }
     } catch (error) {
         res.status(500).json(error)
