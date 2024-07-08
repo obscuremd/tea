@@ -2,11 +2,12 @@ import { Shared } from '../../assets/Shared'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ProfileFeedState, UserState } from '../../state/atoms/UserState'
 import empty from '../../assets/profile.png'
+import { UserPosts } from '../../state/atoms/UserPostsState'
 
 
 const Hero = () => {
   const [feed, setFeed] = useRecoilState(ProfileFeedState)
-
+  const Posts = useRecoilValue(UserPosts)
   const user = useRecoilValue(UserState)
 
 
@@ -34,7 +35,7 @@ const Hero = () => {
           <p style={{fontSize:Shared.Text.large, fontWeight:'400', opacity:0.5}}>{user?.email}</p>     
 
           <div className='flex gap-7 p-3'>
-            <p style={{fontSize:Shared.Text.large, fontWeight:'700'}}>23 posts</p>
+            <p style={{fontSize:Shared.Text.large, fontWeight:'700'}}>{Posts.length || 0} posts</p>
             <p style={{fontSize:Shared.Text.large, fontWeight:'700'}}>{user?.followers?.length || 0} followers</p>
             <p style={{fontSize:Shared.Text.large, fontWeight:'700'}}>{user?.following?.length || 0} following</p>
           </div>

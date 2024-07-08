@@ -1,8 +1,8 @@
 import Post from "../../Atoms/Post"
 import Hero from "./Hero"
 import { jellyTriangle } from 'ldrs'
-import { useRecoilState, useRecoilValue } from "recoil"
-import { FetchLoading, FetchPosts, UserPosts } from "../../state/atoms/UserPostsState"
+import { useRecoilValue } from "recoil"
+import { FetchLoading, UserPosts } from "../../state/atoms/UserPostsState"
 
 const Feed = () => {
 
@@ -11,7 +11,6 @@ jellyTriangle.register()
 
 
     const userPosts = useRecoilValue(UserPosts)
-    const [fetchPosts, setFetchPosts] = useRecoilState(FetchPosts)
     const loading = useRecoilValue(FetchLoading)
     const isMobile= window.innerWidth < 768
     
@@ -29,8 +28,7 @@ jellyTriangle.register()
                     <Post key={index} 
                         photo={item.image} 
                         date={item.location}
-                        // comment={item.comment} 
-                        fetchPosts={fetchPosts}
+                        comment={0} 
                         desc={item.desc} 
                         like={item.likes.length} 
                         postsDetails={item}

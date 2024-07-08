@@ -1,13 +1,15 @@
-import PropTypes from 'prop-types';
 import Post from '../../Atoms/Post'
 import FriendsMobile from '../../Atoms/FriendsMobile'
 import Friends from '../../Atoms/Friends'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { FriendsState } from '../../state/atoms/FriendsState'
-import { useEffect, useState } from 'react';
+import { useEffect,} from 'react';
 import axios from 'axios';
-import { UserState } from '../../state/atoms/UserState';
 import { isMobile, Url } from '../../assets/Shared';
+import { useClerk } from '@clerk/clerk-react';
+import toast from 'react-hot-toast'
+import { FetchLoading, UserPosts } from '../../state/atoms/UserPostsState';
+import InfiniteScroll from 'react-infinite-scroll-component';
 interface User {
   _id: string;
   email: string;
@@ -38,55 +40,81 @@ interface Post {
   __v: number;
 }
 
-type UserPosts = Post[];
 
 const ProfileFeed = () => {
 
-  const [userPosts, setUserPosts] = useState<UserPosts>()
+  const [Posts, setPosts] = useRecoilState(UserPosts)
+  const [loading, setLoading]= useRecoilState(FetchLoading)
   const friendState = useRecoilValue(FriendsState)
-  const user = useRecoilValue(UserState)
+  const {user} = useClerk()
 
   const fetchPosts = async () => {
-    const res = await axios.get(`${Url}/api/posts/profile/${user?.username}`);
-    setUserPosts(res.data); // Update state with fetched posts
+    setLoading(true)
+        try {
+            const res = await axios.get(`${Url}/api/post/profile/${user?.emailAddresses[0].emailAddress}`);
+            const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
+            const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
+            const userResponses = await Promise.all(userPromises) 
+            const users = userResponses.map(response => response.data);
+
+            const postsWithUser = sortedPost.map((post, index) => ({
+                ...post,
+                user: users[index],
+            }));
+            setPosts(postsWithUser);
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            toast.error('error')
+        }
   }
 
   useEffect(() => { fetchPosts() }, [])
 
-  const UserPosts = () => {
+  const UsersPosts = () => {
     return (
-      <div className='flex flex-col md:gap-12 gap-6'>
-
-
-
-        {userPosts && userPosts.length === 0
+      <>
+        {Posts && Posts.length === 0
           ? <p className='md:w-[50vw] w-screen text-center'>No Posts yet</p>
-          : (userPosts && userPosts.map((item, index) => (
+          :<InfiniteScroll
+            className='flex flex-col md:gap-12 gap-6'
+            dataLength={Posts.length} //This is important field to render the next data
+            next={fetchPosts}
+            hasMore={false}
+            loader={<h4>Loading...</h4>}
+            endMessage={ <p className='py-10 text-center'> <b>Yay! You have seen it all</b> </p> }
+            >
+            {Posts && Posts.map((item, index) => (
             <Post key={index}
-              photo={item?.image}
-              date={item?.createdAt}
-              // profilePicture={Users[item.userId].profilePicture} 
-              // comment={item.comment} 
-              desc={item?.desc}
-              like={item?.likes.length}
-              postsDetails={item}
-            // username={Users[item.userId].username}
-            />
-          )))
+                  photo={item?.image}
+                  date={item?.location}
+                  profilePicture={item.user.profilePicture}
+                  comment={0} 
+                  desc={item?.desc}
+                  like={item?.likes.length}
+                  postsDetails={item}
+                  username={item.user.username}
+                />
+          ))}
+          </InfiniteScroll>
         }
 
-      </div>
+      </>
     )
   }
 
   return (
 
     <div className='flex gap-7'>
-      <UserPosts />
+      {loading
+        ? <div className="w-full flex justify-center md:py-10 md:px-[10vw] py-[30vh]">
+            <l-line-wobble size={isMobile?"200" :"500"} stroke="5" bg-opacity="0.1" speed="1.75" color="#572E56" />
+          </div>
+        :<UsersPosts />}
 
       {isMobile && friendState ?
         <FriendsMobile /> :
-        <div className={isMobile && 'hidden'}>
+        <div className={isMobile ? 'hidden' :''}>
           <Friends />
         </div>
       }
@@ -94,8 +122,5 @@ const ProfileFeed = () => {
   )
 }
 
-ProfileFeed.propTypes = {
-  isMobile: PropTypes.any
-}
 
 export default ProfileFeed

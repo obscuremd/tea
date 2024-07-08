@@ -1,11 +1,15 @@
 import {Router} from "express";
 import Comment from "../models/Comment";
-import Post from "../models/Post";
 import User from "../models/User";
+import Posts from "../models/Post";
 
 const router = Router()
 
+// create comment
 router.post('/:id',async(req, res) =>{
+
+    const post = await Posts.findById(req.params.id)
+
     try {
         const newComment = new Comment ({
             postId: req.params.id,
@@ -14,6 +18,7 @@ router.post('/:id',async(req, res) =>{
         })
 
         const savedComment = await newComment.save()
+        await post?.updateOne({$push:{comments: savedComment._id}})
 
         res.status(200).json('comment saved' + savedComment)
     } catch (error) {
@@ -22,16 +27,16 @@ router.post('/:id',async(req, res) =>{
     
 })
 
+// get comments
 router.get('/:id',async(req, res) =>{
+    const postId = req.params.id
     try {
-        const comment = await Comment.findById(req.params.id)
+        const comment = await Comment.find()
         if(!comment){
             res.status(404).json('comment not found')
         }
-        else if (comment.postId === req.body.postId) {
-            res.status(200).json(comment)
-        } else {
-            res.status(500).json('comment not found')
+        else {
+            res.status(200).json(comment. filter(comment => comment.postId === postId) )
         }
     } catch (error) {
         res.status(500).json(error)

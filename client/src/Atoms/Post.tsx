@@ -44,7 +44,7 @@ interface Props {
     like: number;
     photo: string;
     desc: string;
-    comment: string;
+    comment: number;
     date: string;
     postsDetails: posts;
 }

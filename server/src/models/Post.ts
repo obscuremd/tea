@@ -3,8 +3,8 @@ import mongoose, { models } from "mongoose"
 
 const PostSchema = new mongoose.Schema({
     email:{
-       type: String,
-       required:true  
+        type: String,
+        required:true  
     },
     location:{
         type: String,
@@ -20,7 +20,11 @@ const PostSchema = new mongoose.Schema({
     likes:{
         type: Array,
         default:[]
-    }
+    },
+    comments:{
+        type: Array,
+        default:[]
+    },
 
     },
     {timestamps:true}
