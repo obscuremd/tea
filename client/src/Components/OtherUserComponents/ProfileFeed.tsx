@@ -1,29 +1,30 @@
-import PropTypes from 'prop-types';
-import { Posts, Users } from '../../assets/Data'
-import Post from '../../Atoms/Post'
 import FriendsMobile from '../../Atoms/FriendsMobile'
 import Friends from '../../Atoms/Friends'
 import { useRecoilValue } from 'recoil'
 import { FriendsState } from '../../state/atoms/FriendsState'
+import { isMobile } from '../../assets/Shared';
+import Post from '../../Atoms/Post';
 
-const ProfileFeed = ({isMobile}) => {
+interface Props{
+  posts:[]
+}
+const ProfileFeed:React.FC<Props> = ({posts}) => {
 
     const friendState = useRecoilValue(FriendsState)
 
     const UserPosts =()=>{
         return(
             <div className='flex flex-col md:gap-12 gap-6'>
-                {Posts.map((item, index)=>(
-                    Users[item.id]&&
+                {/* {posts.map((item, index)=>(
                     <Post key={index} 
                         photo={item.photo} 
                         date={item.date}
-                        profilePicture={Users[item.userId].profilePicture} 
+                        // profilePicture={Users[item.userId].profilePicture} 
                         comment={item.comment} 
                         desc={item.desc} 
                         like={item.like} 
                         username={Users[item.userId].username}/>
-                ))}
+                ))} */}
             </div>
         )
     }
@@ -35,7 +36,7 @@ const ProfileFeed = ({isMobile}) => {
 
         {isMobile && friendState ?
               <FriendsMobile/>:
-              <div className={isMobile && 'hidden'}>
+              <div className={isMobile ? 'hidden' :''}>
                 <Friends/>
               </div>
             }
@@ -43,8 +44,6 @@ const ProfileFeed = ({isMobile}) => {
   )
 }
 
-ProfileFeed.propTypes = {
-  isMobile: PropTypes.string
-}
+
 
 export default ProfileFeed

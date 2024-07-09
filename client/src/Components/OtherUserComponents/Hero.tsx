@@ -4,7 +4,8 @@ import { Shared } from '../../assets/Shared'
 
 const Hero = ({data}) => {
 
-  const UserData = data
+  const UserData = data[1].user
+  console.log(UserData)
 
   return (
     <div className='md:mb-[56px] mb-[35px]'>
