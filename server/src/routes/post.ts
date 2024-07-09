@@ -5,26 +5,9 @@ import { Router } from 'express';
 
 const router = Router()
 
-// get a post
-router.get('/:email', async(req, res)=>{
 
-    try {
-        const post = await Post.find({email: req.params.email})
-        res.status(200).json(post)
-    } catch (error) {
-        res.status(404).json(error)
-    }
-})
 
-// get all posts
-router.get('/', async(req, res)=>{
-    try {
-        const post = await Post.find()
-        res.json(post)
-    } catch (error) {
-        res.status(404).send(error)
-    }
-})
+
 
 // create a post
 router.post('/:email',async(req, res)=>{
@@ -50,6 +33,33 @@ router.get('/profile/:email', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json(error);
+    }
+})
+
+// get a post by username
+router.get('/:username', async(req, res)=>{
+    const user = await User.findOne({ username: req.params.username})
+
+    if(!user){
+        res.status(404).json('user not found')
+    }else{
+        try {
+            const post = await Post.find({email: user.email})
+            res.status(200).json(post)
+        } catch (error) {
+            res.status(404).json(error)
+        }
+    }
+
+})
+
+// get all posts
+router.get('/', async(req, res)=>{
+    try {
+        const post = await Post.find()
+        res.json(post)
+    } catch (error) {
+        res.status(404).send(error)
     }
 })
 

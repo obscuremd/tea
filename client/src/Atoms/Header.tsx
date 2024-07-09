@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from '../assets/LOGO.svg'
+import logo from '../assets/white LOGO.svg'
 import { BellNotification, ChatBubbleEmpty } from 'iconoir-react';
 import { Link } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -31,10 +31,8 @@ const Header = () => {
       {/* logo and title */}
       <div className='flex items-center gap-9'>
         {/* logo */}
-        <div className='md:w-16 w-10 h-10 md:h-12 bg-[#454862] border-[#62668980] border-[1px] rounded-3xl flex justify-center items-center'>
-          <img src={logo} alt="" className='md:w-10 w-6' />
-        </div>
-        {!isMobile && <p style={gradientTextStyleBlue}>TEA</p>}
+          <img src={logo} alt="" className='md:w-12 w-8' />
+          {!isMobile && <p style={gradientTextStyleBlue}>TEA</p>}
       </div>
 
       <div className='flex gap-4 md:gap-9 text-xs md:text-base'>

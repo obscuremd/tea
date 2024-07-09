@@ -15,19 +15,15 @@ const OtherUserProfile = () => {
   console.log(username);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await axios.get(`${Url}/api/users?username=${username.username}`)
-      setUser(res.data)
-      console.log(user);
-    }
+    
 
     const fetchPosts = async () => {
-      const res = await axios.get(`${Url}/api/users?username=${username.username}`)
+      const res = await axios.get(`${Url}/api/post/${username.username}`)
       setPosts(res.data)
-      console.log(posts);
+      console.log(res.data);
     }
 
-    fetchUsers(), fetchPosts()
+    fetchPosts()
   }, [])
 
   return (
