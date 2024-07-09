@@ -9,29 +9,6 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
 
-  // const token = window.localStorage.getItem('token');
-
-  // // console.log(jwtDecode(token));
-
-  // const [user, setUser] = useRecoilState(UserState)
-
-  // useEffect(() => {
-  //   token && fetchUser()
-  // }, [token])
-
-  // const fetchUser = async () => {
-  //   try {
-  //     const req = await axios.get(`${Url}/api/users/?username=${jwtDecode(token).user.username}`)
-  //     setUser(req.data)
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 304) {
-  //       window.localStorage.removeItem('token');
-  //       setUser(null);
-  //       // Redirect to login or show a message
-  //     }
-  //   }
-  // }
-
 
   return (
     <BrowserRouter>

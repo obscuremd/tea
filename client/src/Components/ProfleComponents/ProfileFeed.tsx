@@ -53,7 +53,11 @@ const ProfileFeed = () => {
     setLoading(true)
         try {
             const res = await axios.get(`${Url}/api/post/profile/${user?.emailAddresses[0].emailAddress}`);
-            const sortedPost:Post[] = res.data.sort((p1:Post, p2:Post) => p2.likes.length - p1.likes.length);
+            const sortedPost: Post[] = res.data.sort((p1: Post, p2: Post) => {
+              const date1 = new Date(p1.createdAt).getTime();
+              const date2 = new Date(p2.createdAt).getTime();
+              return date2 - date1;
+            });
             const userPromises = sortedPost.map(post => axios.get(`${Url}/api/user/${post.email}`))
             const userResponses = await Promise.all(userPromises) 
             const users = userResponses.map(response => response.data);

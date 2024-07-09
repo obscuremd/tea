@@ -52,4 +52,23 @@ declare module 'use-react-countries' {
   
     export function useCountries(): UseCountriesResult;
   }
+
+  /// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_CLERK_PUBLISHABLE_KEY: string;
+  readonly VITE_FIREBASE_KEY: string;
+  readonly VITE_FIREBASE_DOMAIN: string;
+  readonly VITE_FIREBASE_ID: string;
+  readonly VITE_FIREBASE_BUCKET: string;
+  readonly VITE_FIREBASE_SENDERID: string;
+  readonly VITE_FIREBASE_APPID: string;
+  readonly VITE_FIREBASE_MEASUREMENTID: string;
+  // Add other environment variables here...
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
   

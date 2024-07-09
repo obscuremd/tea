@@ -18,7 +18,7 @@ const Register : React.FC<Props> = ({setActive}) => {
 
 dotStream.register()
 
-const {isLoaded, signUp} =useSignUp()
+  const {isLoaded, signUp} =useSignUp()
 
   const [loading, setLoading] = useState(false)
   const [focus, setFocus] = useState(false)
@@ -40,7 +40,7 @@ const {isLoaded, signUp} =useSignUp()
       return
     }
 
-    if(username === '' && email === '' && password === '' || username === '' && email === '' && password === ''){
+    if(username === '' && email === '' && password === '' || username === '' && email === '' && password === '' && firstName === '' && lastName === ''){
       setTimeout(()=>{
         toast.error('fields must not be empty')
         setLoading(false)
