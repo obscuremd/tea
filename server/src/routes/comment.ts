@@ -20,7 +20,7 @@ router.post('/:id',async(req, res) =>{
         const savedComment = await newComment.save()
         await post?.updateOne({$push:{comments: savedComment._id}})
 
-        res.status(200).json('comment saved' + savedComment)
+        res.status(200).json(savedComment)
     } catch (error) {
         res.status(500).json(error)
     }
