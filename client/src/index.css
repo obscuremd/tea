@@ -57,3 +57,6 @@ input{
   @apply bg-[#292B3B] border-[1px] border-[#62668980] outline-none
 }
 
+textarea{
+  @apply bg-[#292B3B] border-[1px] border-[#62668980] outline-none
+}

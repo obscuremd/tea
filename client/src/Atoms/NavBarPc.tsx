@@ -23,7 +23,7 @@ const NavBarPc = () => {
         {/* Home and Message */}
         <div className='box p-5 flex flex-col gap-8 rounded-3xl'>
             <TransparentButton active={active} click={()=>setActive(0)}  icon={<HomeSimple/>} state={0} name={'Home'} link={'/'}/>
-            <TransparentButton active={active} click={()=>setActive(1)}  icon={<ChatLines/>} state={1} name={'Messages'} link={'/'}/>
+            <TransparentButton active={active} click={()=>setActive(1)}  icon={<ChatLines/>} state={1} name={'Messages'} link={'/messages'}/>
         </div>
         {/*create post */}
         <button 

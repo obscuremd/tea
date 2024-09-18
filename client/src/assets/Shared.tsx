@@ -36,3 +36,5 @@ export const Url = 'https://tea-bt8e.onrender.com'
 
 
 export const characters = /[`!@#$%^&*()_+\-={};':"\\|,.<>/?~]/;
+
+export const lorem = 'lorem ipsum dolor sit amet, consectetur adip sap, sed do eiusmod tempor incididunt ut labore et dolore magna aliqu     Lorem ipsum dolor sit amet, consectetur adip   sap, sed do eiusmod tempor incididunt ut labore et dolore magna aliqu Lorem ipsum dolor sit am et'

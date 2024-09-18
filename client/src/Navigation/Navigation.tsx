@@ -23,6 +23,7 @@ const CreatePost = lazy(()=> import('../Atoms/CreatePost'))
 const Comments = lazy(()=> import('../Atoms/Comments'))
 const Settings = lazy(()=> import('../Screens/Settings'))
 const UserForm = lazy(()=> import('../Screens/UserForm'))
+const Messages = lazy(()=> import('../Screens/Messages'))
 
 function Navigation() {
 
@@ -90,6 +91,7 @@ function Navigation() {
               <Route path='/settings' element={<Settings/>}/>
               <Route path='/Userprofile' element={<OtherUserProfile/>}/>
               <Route path='/Userprofile/:username' element={<OtherUserProfile/>}/>
+              <Route path='/messages' element={<Messages/>}/>
           </Routes> 
           {isCommentVisible && <Comments/>}
           {isCreatePostVisible && <CreatePost/>}

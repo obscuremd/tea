@@ -5,6 +5,8 @@ import cors from "cors";
 import userRoute from "./routes/user";
 import postRoute from "./routes/post";
 import commentRoute from "./routes/comment";
+import conversationRoute from "./routes/conversations";
+import messagesRoute from "./routes/messages";
 
 dotenv.config();
 
@@ -42,7 +44,9 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/comment", commentRoute);
+app.use("/api/conversations", conversationRoute);
+app.use("/api/messages", messagesRoute);
 
 app.listen(PORT, () => {
-  console.log("server running");
+  console.log(`server running http://localhost:${PORT}`);
 });

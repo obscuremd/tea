@@ -17,8 +17,8 @@ const Login : React.FC<Props> = ({ setActive }) => {
 
   dotStream.register()
 
-  const {isLoaded, signIn} =useSignIn()
-
+  
+const {isLoaded, signIn} =useSignIn()
   const [loading, setLoading] = useState(false)
 
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -76,7 +76,6 @@ const Login : React.FC<Props> = ({ setActive }) => {
         }
       }
     }
-    
   }
 
 

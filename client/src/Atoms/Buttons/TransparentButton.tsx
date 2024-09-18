@@ -14,11 +14,17 @@ interface ButtonProps{
 
 
 const TransparentButton: React.FC<ButtonProps> = ({icon, state, name, link, active, click}) => {
+
+  const handleClick = () => {
+    click();
+    window.scrollTo(0, 0);
+  };
+
   return (
     <Link to={link}>
             <motion.button
                 // whileHover={{backgroundColor:'#62668980'}} 
-                onClick={click}
+                onClick={handleClick}
                 style={{fontSize:Shared.Text.large, 
                         background:active === state ? '#62668980' : 'transparent',
                         borderColor:'#626689',
