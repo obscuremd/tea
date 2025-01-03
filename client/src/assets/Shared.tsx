@@ -32,7 +32,7 @@ export const gradientTextStyleBlue = {
 export const gradient = 'linear-gradient(129deg, #D64975 -54.57%, #152046 94.11%)'
 export const gradientRed = 'linear-gradient(129deg, #70263D -54.57%, #D64975 94.11%)'
 
-export const Url = 'https://tea-bt8e.onrender.com'
+export const Url = 'https://tea-server-three.vercel.app'
 
 
 export const characters = /[`!@#$%^&*()_+\-={};':"\\|,.<>/?~]/;
